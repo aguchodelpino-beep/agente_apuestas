@@ -4,3 +4,10 @@ __pycache__/
 .pytest_cache/
 data/cache/
 legacy_quarantine/
+
+secrets_quarantine/
+*.bak*
+logs/
+cachediario/
+cache_diario/
+venv/
