@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""
+audit_rapidapi.py — Testea TODOS los endpoints RapidAPI
+"""
+
+import asyncio
+import aiohttp
+from pathlib import Path
+import json
+from datetime import datetime
+
+RAPID_KEY = "28466e2b9bmsh250cc391e06fd2ap1c779ejsn6ce59f12c0ed"
+
+ENDPOINTS = [
+    {"name": "odds_api1", "url": "https://odds-api1.p.rapidapi.com/v4/sports", "headers": {"X-RapidAPI-Host": "odds-api1.p.rapidapi.com"}},
+    {"name": "sportsbook_api2", "url": "https://sportsbook-api2.p.rapidapi.com/matches", "headers": {"X-RapidAPI-Host": "sportsbook-api2.p.rapidapi.com"}},
+    {"name": "today_football_prediction", "url": "https://today-football-prediction.p.rapidapi.com/v1/prediction", "headers": {"X-RapidAPI-Host": "today-football-prediction.p.rapidapi.com"}},
+    {"name": "bet365_api_inplay", "url": "https://bet365-api-inplay.p.rapidapi.com/api", "headers": {"X-RapidAPI-Host": "bet365-api-inplay.p.rapidapi.com"}},
+    {"name": "bet365data", "url": "https://bet365data.p.rapidapi.com/home", "headers": {"X-RapidAPI-Host": "bet365data.p.rapidapi.com"}},
+    {"name": "ultimate_tennis1", "url": "https://ultimate-tennis1.p.rapidapi.com/api/v1/players", "headers": {"X-RapidAPI-Host": "ultimate-tennis1.p.rapidapi.com"}},
+    {"name": "sports_live_scores", "url": "https://sports-live-scores.p.rapidapi.com/race", "headers": {"X-RapidAPI-Host": "sports-live-scores.p.rapidapi.com"}},
+    {"name": "tennis_api_atp_wta_itf", "url": "https://tennis-api-atp-wta-itf.p.rapidapi.com/atp", "headers": {"X-RapidAPI-Host": "tennis-api-atp-wta-itf.p.rapidapi.com"}},
+    {"name": "allsportsapi2", "url": "https://allsportsapi2.p.rapidapi.com/api", "headers": {"X-RapidAPI-Host": "allsportsapi2.p.rapidapi.com"}},
+    {"name": "nba_api_free_data", "url": "https://nba-api-free-data.p.rapidapi.com", "headers": {"X-RapidAPI-Host": "nba-api-free-data.p.rapidapi.com"}},
+    {"name": "free_football_api_data", "url": "https://free-football-api-data.p.rapidapi.com", "headers": {"X-RapidAPI-Host": "free-football-api-data.p.rapidapi.com"}},
+    {"name": "premier_league_stats", "url": "https://premier-league-stats.p.rapidapi.com", "headers": {"X-RapidAPI-Host": "premier-league-stats.p.rapidapi.com"}},
+    {"name": "propsports", "url": "https://propsports.p.rapidapi.com", "headers": {"X-RapidAPI-Host": "propsports.p.rapidapi.com"}},
+    {"name": "nba_injury_data", "url": "https://nba-injury-data.p.rapidapi.com", "headers": {"X-RapidAPI-Host": "nba-injury-data.p.rapidapi.com"}},
+]
+
+async def test_endpoint(session: aiohttp.ClientSession, ep: dict) -> dict:
+    headers = ep["headers"].copy()
+    headers["X-RapidAPI-Key"] = RAPID_KEY
+    
+    try:
+        async with session.get(ep["url"], headers=headers, timeout=15) as resp:
+            return {
+                "name": ep["name"],
+                "status": resp.status,
+                "status_text": "OK" if resp.status == 200 else "FAIL",
+                "content_type": resp.headers.get("content-type", "unknown"),
+                "content_length": int(resp.headers.get("content-length", 0)),
+                "remaining": resp.headers.get("x-ratelimit-remaining-requests"),
+                "reset": resp.headers.get("x-ratelimit-reset"),
+            }
+    except Exception as e:
+        return {"name": ep["name"], "status": "ERROR", "error": str(e)[:100]}
+
+async def main():
+    async with aiohttp.ClientSession() as session:
+        tasks = [test_endpoint(session, ep) for ep in ENDPOINTS]
+        results = await asyncio.gather(*tasks)
+        
+        print("=== RAPIDAPI CATALOGO ===")
+        live = []
+        for r in results:
+            if r.get("status") == 200:
+                print(f"✅ {r['name']:20} | {r.get('remaining', 'N/A'):10} | {r.get('content_length', 0):6} bytes")
+                live.append(r)
+            else:
+                print(f"❌ {r['name']:20} | {r.get('status', 'ERROR')}")
+        
+        print(f"\nLIVE: {len(live)}/{len(ENDPOINTS)}")
+        
+        # Guardar
+        report = {"timestamp": datetime.now().isoformat(), "live": live, "fail": [r for r in results if r.get("status") != 200]}
+        Path("rapidapi_catalog.json").write_text(json.dumps(report, indent=2))
+        print("Guardado: rapidapi_catalog.json")
+
+if __name__ == "__main__":
+    asyncio.run(main())

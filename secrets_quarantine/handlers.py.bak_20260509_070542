@@ -1,0 +1,18 @@
+from __future__ import annotations
+
+from departments.deportes.tenis.service import build_event_cards, build_event_groups
+from departments.visuales.formatter import render_eventos_tenis
+from shared.picks_cache import render_picks
+
+
+def handle_eventos_tenis(limit: int = 10) -> str:
+    cards = build_event_cards(limit=limit)
+    return render_eventos_tenis(cards)
+
+
+def handle_tenis_picks(limit: int = 10) -> str:
+    return render_picks("tenis", lines=[
+        "TENIS PICKS",
+        "",
+        "Base lista; falta capa analítica para picks reales.",
+    ])

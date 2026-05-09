@@ -1,0 +1,21 @@
+from __future__ import annotations
+
+from departments.deportes.tenis.service import buildeventcards, buildeventgroups
+from departments.visuales.formatter import rendereventostenis, rendertenispicks
+
+# Exports públicos para monkeypatch de tests
+build_event_cards = buildeventcards
+build_event_groups = buildeventgroups
+render_eventos_tenis_cards = rendereventostenis
+render_tenis_picks = rendertenispicks
+
+def handle_eventos_tenis(limit: int = 10) -> str:
+    cards = buildeventcards(limit=limit)
+    return rendereventostenis(cards)
+
+def handle_tenis_picks(limit: int = 10) -> str:
+    return rendertenispicks()
+
+# Aliases legacy (lo que tests y telegrambot esperan)
+handleeventostenis = handle_eventos_tenis
+handletenispicks = handle_tenis_picks

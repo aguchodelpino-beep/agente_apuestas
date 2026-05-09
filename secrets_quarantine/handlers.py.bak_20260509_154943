@@ -1,0 +1,13 @@
+
+def handle_eventos_tenis(limit=10):
+    return handleeventostenis(limit)
+from __future__ import annotations
+from departments.deportes.tenis.service import buildeventcards
+from departments.visuales.formatter import rendereventostenis, rendertenispicks
+
+def handleeventostenis(limit: int = 10) -> str:
+    cards = buildeventcards(limit=limit)
+    return rendereventostenis(cards)
+
+def handletenispicks(limit: int = 10) -> str:
+    return rendertenispicks()
