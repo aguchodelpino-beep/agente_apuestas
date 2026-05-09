@@ -93,9 +93,6 @@ def render_eventos_tenis(cards: list[dict[str, Any]]) -> str:
 
 
 
-daylabel = day_label
-hourlabel = hour_label
-
 
 def render_tenis_picks(lines: list[str] | None = None) -> str:
     base = [
@@ -108,4 +105,3 @@ def render_tenis_picks(lines: list[str] | None = None) -> str:
         if extra:
             base.extend([""] + extra)
     return "\n".join(base)
-
