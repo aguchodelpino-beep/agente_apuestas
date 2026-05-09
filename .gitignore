@@ -11,3 +11,11 @@ logs/
 cachediario/
 cache_diario/
 venv/
+
+# Logs y data
+logs/
+*.log
+data/
+*.json
+.env
+cache_scheduler.log
