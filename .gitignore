@@ -18,3 +18,7 @@ logs/
 data/
 .env
 cache_scheduler.log
+
+.env
+.bot.log*
+cache_scheduler.log
