@@ -82,3 +82,4 @@ def main() -> None:
 if __name__ == "__main__":
     assert self_test()
     print("SCRIPT OK")
+    main()
