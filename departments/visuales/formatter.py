@@ -141,3 +141,35 @@ def rendereventosteniscards(cards: list[dict[str, Any]]) -> str:
 
 def rendereventostenis(cards):
     return rendereventosteniscards(cards)
+
+def format_events_block(title: str, emoji: str, events: list, action_path: str = None) -> str:
+    """Formato unificado para eventos deportivos"""
+    if not events:
+        return f"{emoji} {title.upper()}\n\n*No hay eventos disponibles*\n"
+    
+    lines = [f"{emoji} {title.upper()}", "🗓️ 09/05/2026", "━━━━━━━━━━━━━━━━━━━━━━"]
+    
+    # Agrupar por fecha
+    by_date = {}
+    for event in events:
+        date_str = str(event.get('datetime', 'Sin fecha')).split('T')[0]
+        if date_str not in by_date:
+            by_date[date_str] = []
+        by_date[date_str].append(event)
+    
+    for date_str, date_events in sorted(by_date.items()):
+        lines.append(f"\n📅 {date_str}")
+        for event in date_events[:10]:  # Top 10 por fecha
+            time = str(event.get('datetime', '')).split('T')[1][:5] if 'T' in str(event.get('datetime', '')) else "TBD"
+            home = event.get('home', 'TBD')
+            away = event.get('away', 'TBD')
+            league = event.get('league', 'Sin liga')
+            status = event.get('status', 'Pendiente')
+            
+            line = f"   🕐 {time} | {home} vs {away} | {league} | {status}"
+            lines.append(line)
+    
+    if action_path:
+        lines.append(f"\n\n📊 Ver picks → /{action_path}")
+    
+    return "\n".join(lines)
