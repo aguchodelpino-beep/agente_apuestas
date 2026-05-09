@@ -12,11 +12,11 @@ bash scripts/runaudit.sh || true
 
 echo
 echo "================ TENIS CHAIN ================"
-bash scripts/audittenischain.sh || true
+bash scripts/audit_tenis_chain.sh || true
 
 echo
 echo "================ TENIS REAL ODDS ================"
-bash scripts/checktenisrealodds.sh || true
+bash scripts/check_tenis_real_odds.sh || true
 
 echo
 echo "================ PLACEHOLDERS ================"

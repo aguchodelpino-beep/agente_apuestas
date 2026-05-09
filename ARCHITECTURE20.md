@@ -5,7 +5,7 @@
 Antes de tocar cualquier archivo o proponer cualquier cambio, el orden obligatorio es:
 
 1. `bash scripts/agent_status.sh`
-2. `bash scripts/runaudit.sh`
+2. `bash scripts/run_audit.sh`
 3. Recién después, cualquier parche, script o desarrollo nuevo.
 
 Objetivo:

@@ -8,7 +8,7 @@ bash scripts/agent_status.sh
 
 echo
 echo "== AUDIT =="
-bash scripts/runaudit.sh
+bash scripts/run_audit.sh
 
 echo
 echo "== SNAPSHOT TESTS =="

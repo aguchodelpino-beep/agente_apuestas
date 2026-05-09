@@ -53,7 +53,7 @@ echo
 echo
 echo "REGLA DE TRABAJO OBLIGATORIA:"
 echo "  1) bash scripts/agent_status.sh"
-echo "  2) bash scripts/runaudit.sh"
+echo "  2) bash scripts/run_audit.sh"
 echo "  3) Luego cualquier parche o desarrollo nuevo"
 echo "SCRIPT_OK TOTAL:"
 echo "  $total_ok módulos verificados"
@@ -87,6 +87,6 @@ echo "  🔄 Datos reales odds API en tenis.repo"
 
 echo
 echo "PROXIMO PASO:"
-echo "  bash scripts/runaudit.sh"
+echo "  bash scripts/run_audit.sh"
 echo
 echo "SCRIPT OK: scripts/agent_status.sh"

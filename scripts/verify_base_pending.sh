@@ -15,4 +15,4 @@ pytest tests/test_sharedoddsmath.py -v
 pytest tests/ -v
 
 bash scripts/agent_status.sh
-bash scripts/runaudit.sh
+bash scripts/run_audit.sh
