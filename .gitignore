@@ -16,6 +16,5 @@ venv/
 logs/
 *.log
 data/
-*.json
 .env
 cache_scheduler.log

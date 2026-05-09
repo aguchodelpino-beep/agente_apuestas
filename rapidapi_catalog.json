@@ -1,0 +1,132 @@
+{
+  "timestamp": "2026-05-09T16:09:14.479256",
+  "live": [],
+  "fail": [
+    {
+      "name": "odds_api1",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "sportsbook_api2",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "today_football_prediction",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "bet365_api_inplay",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "bet365data",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "ultimate_tennis1",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "sports_live_scores",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "tennis_api_atp_wta_itf",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "allsportsapi2",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "nba_api_free_data",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "free_football_api_data",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "premier_league_stats",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "propsports",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    },
+    {
+      "name": "nba_injury_data",
+      "status": 404,
+      "status_text": "FAIL",
+      "content_type": "application/json",
+      "content_length": 0,
+      "remaining": null,
+      "reset": null
+    }
+  ]
+}
