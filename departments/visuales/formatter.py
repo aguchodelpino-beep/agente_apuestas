@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from datetime import datetime
 from typing import Any
+from shared.datetimeutils import daylabel, hourlabel
 
 from shared.datetime_utils import day_label, hour_label
 
@@ -105,3 +106,38 @@ def render_tenis_picks(lines: list[str] | None = None) -> str:
         if extra:
             base.extend([""] + extra)
     return "\n".join(base)
+
+
+def rendereventosteniscards(cards: list[dict[str, Any]]) -> str:
+    if not cards:
+        return "EVENTOS TENIS\nNo hay partidos próximos en cache local."
+
+    grouped: "OrderedDict[str, list[dict[str, Any]]]" = OrderedDict()
+    for card in cards:
+        start = card.get("start") or ""
+        day = daylabel(start) if start else (card.get("day") or "Sin fecha")
+        grouped.setdefault(day, []).append(card)
+
+    lines = ["EVENTOS TENIS"]
+    for day, items in grouped.items():
+        lines.append("")
+        lines.append(f"{day}")
+        for card in items:
+            start = card.get("start") or ""
+            hour = hourlabel(start) if start else (card.get("hour") or "--:--")
+            title = card.get("title") or "TBD vs TBD"
+            tour = card.get("tour") or "Tenis"
+            markets = int(card.get("markets") or 0)
+
+            line = f"- {hour} | {title} | {tour}"
+            if markets > 0:
+                line += f" | {markets} markets"
+            lines.append(line)
+
+    lines.append("")
+    lines.append("Ver picks: /tenispicks")
+    return "\n".join(lines)
+
+
+def rendereventostenis(cards):
+    return rendereventosteniscards(cards)
