@@ -8,7 +8,7 @@ bash scripts/agent_status.sh || true
 
 echo
 echo "================ AUDIT GENERAL ================"
-bash scripts/runaudit.sh || true
+bash scripts/run_audit.sh || true
 
 echo
 echo "================ TENIS CHAIN ================"
