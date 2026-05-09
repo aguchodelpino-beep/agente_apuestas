@@ -1,0 +1,22 @@
+[
+  {
+    "event_id": "evt1",
+    "sport": "MLS",
+    "match": "Charlotte FC vs FC Cincinnati",
+    "pick_side": "away",
+    "bookmaker": "betmgm",
+    "book_odds": "+145",
+    "edge_percent": 0.51,
+    "result": "win"
+  },
+  {
+    "event_id": "evt2",
+    "sport": "NBA",
+    "match": "San Antonio Spurs vs Minnesota Timberwolves",
+    "pick_side": "away",
+    "bookmaker": "draftkings",
+    "book_odds": "+4000",
+    "edge_percent": 0.35,
+    "result": "loss"
+  }
+]

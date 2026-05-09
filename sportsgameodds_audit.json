@@ -1,0 +1,902 @@
+[
+  {
+    "url": "https://api.sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 403,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Your API key does not have access to this version. Try replacing v1 with v2 in your request. Contact support if you still need legacy version access.\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 403,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Your API key does not have access to this version. Try replacing v1 with v2 in your request. Contact support if you still need legacy version access.\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 403,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Your API key does not have access to this version. Try replacing v1 with v2 in your request. Contact support if you still need legacy version access.\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 403,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Your API key does not have access to this version. Try replacing v1 with v2 in your request. Contact support if you still need legacy version access.\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "success",
+      "data"
+    ],
+    "body_preview": "{\"success\": true, \"data\": [{\"sportID\": \"BASKETBALL\", \"enabled\": true, \"name\": \"Basketball\", \"shortName\": \"Basketball\", \"hasMeaningfulHomeAway\": true, \"pointWord\": {\"short\": {\"singular\": \"pt\", \"plural\": \"pts\"}, \"long\": {\"singular\": \"point\", \"plural\": \"points\"}}, \"eventWord\": {\"short\": {\"singular\": \"g"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "success",
+      "data"
+    ],
+    "body_preview": "{\"success\": true, \"data\": [{\"sportID\": \"BASKETBALL\", \"enabled\": true, \"name\": \"Basketball\", \"shortName\": \"Basketball\", \"hasMeaningfulHomeAway\": true, \"pointWord\": {\"short\": {\"singular\": \"pt\", \"plural\": \"pts\"}, \"long\": {\"singular\": \"point\", \"plural\": \"points\"}}, \"eventWord\": {\"short\": {\"singular\": \"g"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "success",
+      "data"
+    ],
+    "body_preview": "{\"success\": true, \"data\": [{\"sportID\": \"BASEBALL\", \"leagueID\": \"MLB\", \"enabled\": true, \"name\": \"MLB\", \"shortName\": \"MLB\", \"longName\": \"Major League Baseball\", \"teamType\": \"DEFAULT\", \"countryName\": \"United States\", \"countryCode\": \"US\"}, {\"sportID\": \"SOCCER\", \"leagueID\": \"MLS\", \"enabled\": true, \"name\""
+  },
+  {
+    "url": "https://api.sportsgameodds.com/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "success",
+      "data"
+    ],
+    "body_preview": "{\"success\": true, \"data\": [{\"sportID\": \"BASEBALL\", \"leagueID\": \"MLB\", \"enabled\": true, \"name\": \"MLB\", \"shortName\": \"MLB\", \"longName\": \"Major League Baseball\", \"teamType\": \"DEFAULT\", \"countryName\": \"United States\", \"countryCode\": \"US\"}, {\"sportID\": \"SOCCER\", \"leagueID\": \"MLS\", \"enabled\": true, \"name\""
+  },
+  {
+    "url": "https://api.sportsgameodds.com/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 401,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Missing API key\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://api.sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "success",
+      "error"
+    ],
+    "body_preview": "{\"success\": false, \"error\": \"Endpoint not found\"}"
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/v1/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 200,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2\\\" as=\\\"fo"
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/sports",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/leagues",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "x-api-key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "X-API-Key",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "apikey",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  },
+  {
+    "url": "https://sportsgameodds.com/api/v1/bookmakers",
+    "header_keys": [
+      "Authorization",
+      "accept"
+    ],
+    "status": 404,
+    "top_keys": [
+      "raw_text"
+    ],
+    "body_preview": "{\"raw_text\": \"<!DOCTYPE html><!--rn_tLf9rqAh9AqITcwale--><html lang=\\\"en\\\" dir=\\\"ltr\\\" class=\\\"dark\\\"><head><meta charSet=\\\"utf-8\\\"/><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/chunks/90b34067e4e34cbe.css\\\" data-precedence=\\\""
+  }
+]
