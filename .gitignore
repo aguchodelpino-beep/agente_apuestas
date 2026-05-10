@@ -22,3 +22,12 @@ cache_scheduler.log
 .env
 .bot.log*
 cache_scheduler.log
+*.bak
+*.bak_*
+*.before_restore_*
+departments/deportes/**/live_today.json
+cache_enriched/
+snapshots/
+.tmp_backups/
+scheduler/
+cache_enriched/

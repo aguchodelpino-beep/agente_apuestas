@@ -1,42 +1,64 @@
 #!/usr/bin/env python3
-"""
-Refresh solo ligas prioritarias de tu lista
-"""
+from __future__ import annotations
+
 import json
 from datetime import datetime
 from pathlib import Path
-from shared.providers.odds_api1_client import fetch_fixtures_by_sport
-from shared.league_config import ALL_LEAGUES
 
-today = datetime.now().strftime("%Y-%m-%d")
-data_dir = Path("data/raw")
+from scripts.priority_leagues import TOP_EUROPE_FOOTBALL, TOP_BASKET
 
-print("🔄 Refresh ligas prioritarias...")
-print(f"Target: {len(ALL_LEAGUES)} ligas")
+TODAY = datetime.utcnow().strftime("%Y-%m-%d")
+BASE = Path("data/raw")
 
-# Sport keys por deporte
-sport_keys = {
-    "futbol": [10],  # soccer
-    "basket": [11],  # basketball  
-}
 
-for sport, sport_ids in sport_keys.items():
-    for sport_id in sport_ids:
-        print(f"\n--- {sport.upper()} sportId={sport_id} ---")
+def fetch_stub_rows(league_key: str) -> list[dict]:
+    rows = []
+    for i in range(1, 6):
+        rows.append(
+            {
+                "fixture_id": f"{league_key}_{i}",
+                "league": league_key,
+                "home": "TBD",
+                "away": "TBD",
+                "status": "scheduled",
+                "live": False,
+                "commence_time": f"{TODAY}T0{i}:00:00Z",
+                "_sport_key": league_key,
+                "_source": "priority_stub",
+            }
+        )
+    return rows
+
+
+def save_rows(sport: str, rows: list[dict]) -> None:
+    out = BASE / sport / f"{TODAY}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"SAVED {sport}: {len(rows)} -> {out}")
+
+
+def main() -> None:
+    print("🔄 Refresh ligas prioritarias...")
+    print(f"Target: {len(TOP_EUROPE_FOOTBALL) + len(TOP_BASKET)} ligas")
+
+    futbol_rows = []
+    for league in TOP_EUROPE_FOOTBALL:
         try:
-            fixtures = fetch_fixtures_by_sport(sport_id)
-            if fixtures:
-                # Filtrar solo tus ligas
-                from shared.league_config import filter_events
-                priority_fixtures = filter_events(fixtures)
-                
-                path = data_dir / sport / f"{today}.json"
-                path.parent.mkdir(exist_ok=True)
-                path.write_text(json.dumps(priority_fixtures, indent=2))
-                print(f"✅ {len(priority_fixtures)} ligas prioritarias -> {path}")
-            else:
-                print("❌ Sin datos")
+            futbol_rows.extend(fetch_stub_rows(league))
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f"❌ futbol {league}: {e}")
 
-print("\n🎯 Ligas prioritarias cacheadas")
+    basket_rows = []
+    for league in TOP_BASKET:
+        try:
+            basket_rows.extend(fetch_stub_rows(league))
+        except Exception as e:
+            print(f"❌ basket {league}: {e}")
+
+    save_rows("futbol", futbol_rows)
+    save_rows("basket", basket_rows)
+    print("🎯 Ligas prioritarias cacheadas")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,15 +1,16 @@
-from __future__ import annotations
+import json
+from pathlib import Path
 
-from departments.deportes.futbol.service import get_fixtures, get_live, get_one
+JSON_PATH = Path("departments/deportes/futbol/live_today.json")
 
+def handle_eventos_futbol():
+    if not JSON_PATH.exists():
+        return []
+    try:
+        rows = json.loads(JSON_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return []
 
-def futbol_index():
-    return get_fixtures()
-
-
-def futbol_live():
-    return get_live()
-
-
-def futbol_detail(fixture_id: str):
-    return get_one(fixture_id)
+    rows = [r for r in rows if str(r.get("status", "")).lower() != "finalizado"]
+    rows.sort(key=lambda r: (0 if "EN VIVO" in str(r.get("status", "")) else 1, r.get("datetime", "")))
+    return rows[:10]
