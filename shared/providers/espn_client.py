@@ -17,6 +17,8 @@ SPORT_MAP: Dict[str, str] = {
     "soccer_usa_mls":        "soccer/usa.1",
     "tennis_atp_french_open":"tennis/atp",
     "tennis_wta_french_open":"tennis/wta",
+    "tennis_atp_italian_open":"tennis/atp",
+    "tennis_wta_italian_open":"tennis/wta",
 }
 
 GROUP_MAP: Dict[str, List[str]] = {
@@ -26,11 +28,25 @@ GROUP_MAP: Dict[str, List[str]] = {
 }
 
 def _fetch(sport_path: str) -> List[Dict[str, Any]]:
+    from datetime import datetime, timezone, timedelta
     url = f"{BASE}/{sport_path}/scoreboard"
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     try:
         with urllib.request.urlopen(req, timeout=8) as r:
-            return json.loads(r.read()).get("events", [])
+            events = json.loads(r.read()).get("events", [])
+        # filtrar solo eventos de hoy en adelante
+        now = datetime.now(timezone.utc)
+        cutoff = (now - timedelta(hours=3)).isoformat()
+        filtered = []
+        for ev in events:
+            ev_date = ev.get("date", "")
+            try:
+                ev_dt = datetime.fromisoformat(ev_date.replace("Z", "+00:00"))
+                if ev_dt >= now - timedelta(hours=3):
+                    filtered.append(ev)
+            except Exception:
+                filtered.append(ev)
+        return filtered
     except Exception as exc:
         import sys
         print(f"[espn_client] {sport_path} failed: {exc}", file=sys.stderr)
@@ -39,10 +55,11 @@ def _fetch(sport_path: str) -> List[Dict[str, Any]]:
 def _normalize(raw: Dict[str, Any], sport_key: str) -> Dict[str, Any]:
     comps = raw.get("competitions", [{}])[0]
     competitors = comps.get("competitors", [])
-    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
-    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
-    home_name = home.get("team", {}).get("displayName", "?")
-    away_name = away.get("team", {}).get("displayName", "?")
+    home = next((c for c in competitors if c.get("homeAway") == "home"), competitors[0] if competitors else {})
+    away = next((c for c in competitors if c.get("homeAway") == "away"), competitors[1] if len(competitors) > 1 else {})
+    # tenis usa "athlete", otros deportes usan "team"
+    home_name = home.get("athlete", home.get("team", {})).get("displayName", "?")
+    away_name = away.get("athlete", away.get("team", {})).get("displayName", "?")
 
     # odds
     odds_raw = comps.get("odds", [{}])[0] if comps.get("odds") else {}
