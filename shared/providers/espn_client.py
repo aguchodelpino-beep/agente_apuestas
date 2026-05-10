@@ -82,23 +82,47 @@ def fetch_sport_group(group: str) -> List[Dict[str, Any]]:
         results.extend(fetch_fixtures(sk))
     return results
 
+import re as _re
+
+_CITY_ABBR = {
+    "ny": "new york", "la": "los angeles", "sf": "san francisco",
+    "kc": "kansas city", "nj": "new jersey", "nо": "new orleans",
+    "ok": "oklahoma", "gs": "golden state",
+}
+
+def _norm_team(name: str) -> str:
+    name = name.lower()
+    name = _re.sub(r"\b(fc|cf|sc|rc|ac|as|ss|sd|cd|ud|rcd|afc|fk|sk|bk|vfb|rb|bsc|hsv)\b", "", name)
+    name = _re.sub(r"[^a-z0-9 ]", "", name)
+    parts = name.split()
+    parts = [_CITY_ABBR.get(p, p) for p in parts]
+    return " ".join(parts).strip()
+
+def _teams_match(a: str, b: str) -> bool:
+    na, nb = _norm_team(a), _norm_team(b)
+    if na == nb:
+        return True
+    # substring match (al menos 6 chars para evitar falsos positivos)
+    if len(na) >= 6 and (na in nb or nb in na):
+        return True
+    # primera palabra significativa
+    wa = [w for w in na.split() if len(w) > 3]
+    wb = [w for w in nb.split() if len(w) > 3]
+    return bool(wa and wb and wa[0] == wb[0])
+
 def crosscheck(
     oddsapi_events: List[Dict[str, Any]],
     espn_events: List[Dict[str, Any]],
 ) -> List[Dict[str, Any]]:
-    """
-    Enriquece eventos de Odds-API con datos ESPN cuando hay match por equipos.
-    Retorna la lista de Odds-API con campo espn_match agregado.
-    """
+    """Enriquece eventos de Odds-API con datos ESPN cuando hay match por equipos."""
     enriched = []
     for ev in oddsapi_events:
-        home = ev.get("home_team", "").lower()
-        away = ev.get("away_team", "").lower()
         match = None
         for esp in espn_events:
-            esp_home = esp.get("home_team", "").lower()
-            esp_away = esp.get("away_team", "").lower()
-            if (home in esp_home or esp_home in home) and (away in esp_away or esp_away in away):
+            if (
+                _teams_match(ev.get("home_team", ""), esp.get("home_team", ""))
+                and _teams_match(ev.get("away_team", ""), esp.get("away_team", ""))
+            ):
                 match = {
                     "espn_id": esp.get("id"),
                     "espn_status": esp.get("status"),
