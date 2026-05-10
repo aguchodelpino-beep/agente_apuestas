@@ -17,8 +17,14 @@ def _load_keys() -> None:
         return
     from dotenv import load_dotenv
     load_dotenv(Path(__file__).resolve().parents[2] / ".env")
-    raw = os.getenv("ODDS_API_KEYS", "") or os.getenv("ODDSAPI_KEY", "")
-    candidates = [k.strip() for k in raw.replace(",", "\n").splitlines() if k.strip()]
+    raw = os.getenv("ODDSAPI_KEYS", "[]")
+    import json as _json
+    try:
+        candidates = [k.strip() for k in _json.loads(raw) if k.strip()]
+    except Exception:
+        # fallback: línea por línea o coma-separado
+        candidates = [k.strip().strip('"') for k in raw.replace(",", "\n").splitlines()
+                      if k.strip().strip('"')]
     _keys = [(500, k) for k in candidates]
     _keys.sort(key=lambda x: -x[0])
     _keys_loaded = True
@@ -63,7 +69,7 @@ def _get(path: str, params: Dict[str, str], _tried: int = 0) -> Tuple[Any, int]:
 # ── sport groups ──────────────────────────────────────────────────────────────
 SPORT_GROUP: Dict[str, List[str]] = {
     "basket": ["basketball_euroleague", "basketball_wnba"],
-    "futbol": ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league", "soccer_usa_mls"],
+    "futbol": ["soccer_spain_la_liga", "soccer_uefa_champs_league", "soccer_usa_mls"],
     "tenis":  ["tennis_atp_italian_open", "tennis_wta_italian_open"],
 }
 
