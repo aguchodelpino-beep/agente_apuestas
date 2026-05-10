@@ -30,3 +30,4 @@ cache_enriched/
 snapshots/
 .tmp_backups/
 scheduler/
+cache_enriched/

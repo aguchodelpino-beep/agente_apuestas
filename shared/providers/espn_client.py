@@ -22,7 +22,7 @@ SPORT_MAP: Dict[str, str] = {
 GROUP_MAP: Dict[str, List[str]] = {
     "basket": ["basketball_nba"],
     "futbol": ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league"],
-    "tenis":  ["tennis_atp_french_open", "tennis_wta_french_open"],
+    "tenis":  ["tennis_atp_italian_open", "tennis_wta_italian_open"],
 }
 
 def _fetch(sport_path: str) -> List[Dict[str, Any]]:

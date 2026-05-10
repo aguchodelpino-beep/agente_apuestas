@@ -64,7 +64,7 @@ def _get(path: str, params: Dict[str, str], _tried: int = 0) -> Tuple[Any, int]:
 SPORT_GROUP: Dict[str, List[str]] = {
     "basket": ["basketball_nba", "basketball_euroleague", "basketball_wnba"],
     "futbol": ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league", "soccer_usa_mls"],
-    "tenis":  ["tennis_atp_french_open", "tennis_wta_french_open"],
+    "tenis":  ["tennis_atp_italian_open", "tennis_wta_italian_open"],
 }
 
 def _normalize_event(raw: Dict[str, Any], sport_key: str) -> Dict[str, Any]:
