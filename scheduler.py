@@ -1,20 +1,52 @@
 from __future__ import annotations
 
-from datetime import timezone
+from datetime import datetime, timezone
 from pathlib import Path
+import json
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
-from shared.cache import CacheManager
+from jobs.line_movement_alert import run_line_movement_alert
 from shared.providers.tenis_provider import fetch_tennis_events
 from shared.providers.futbol_provider import fetch_futbol_events
 from shared.providers.basket_provider import fetch_basket_events
 
+from shared import cache as cache_mod
+from shared.telegram_sender import send_telegram_message
+
 UTC = timezone.utc
+
+
+class CacheManager:
+    def utc_now_iso(self) -> str:
+        return datetime.now(UTC).isoformat()
+
+    def _today_str(self) -> str:
+        return datetime.now(UTC).date().isoformat()
+
+    def day_path(self, sport: str) -> Path:
+        d = cache_mod.RAW_DIR / sport
+        d.mkdir(parents=True, exist_ok=True)
+        return d / f"{self._today_str()}.json"
+
+    def write_day(self, sport: str, payload: list, source: str = "unknown") -> Path:
+        path = self.day_path(sport)
+        cache_mod.write_json(path, payload)
+        return path
+
+    def write_metric(self, row: dict) -> Path:
+        path = cache_mod.SCHEDULER_DIR / "scheduler_metrics.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        return path
+
+
 cache = CacheManager()
+
 
 def refresh_sport(sport: str) -> dict:
     started = time.perf_counter()
@@ -43,7 +75,7 @@ def refresh_sport(sport: str) -> dict:
 
     p = Path(path)
     row = {
-        "timestamp": cache.utc_now_iso() if hasattr(cache, "utc_now_iso") else None,
+        "timestamp": cache.utc_now_iso(),
         "sport": sport,
         "status": status,
         "cache_status": "fresh" if status == "ok" else "error",
@@ -60,14 +92,18 @@ def refresh_sport(sport: str) -> dict:
     cache.write_metric(row)
     return row
 
+
 def refresh_tenis() -> dict:
     return refresh_sport("tenis")
+
 
 def refresh_futbol() -> dict:
     return refresh_sport("futbol")
 
+
 def refresh_basket() -> dict:
     return refresh_sport("basket")
+
 
 def build_scheduler() -> BackgroundScheduler:
     return BackgroundScheduler(
@@ -78,10 +114,27 @@ def build_scheduler() -> BackgroundScheduler:
         timezone=UTC,
     )
 
+
 def register_example_jobs(scheduler: BackgroundScheduler) -> None:
-    # LEGACY DESACTIVADO: la política oficial usa shared/cache_scheduler.py
-    # con build_all_caches() a las 02:00 America/Guayaquil.
     return None
+
+
+def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
+    scheduler.add_job(
+        run_line_movement_alert,
+        trigger="interval",
+        hours=1,
+        id="line_movement_alert",
+        name="Line movement alert",
+        jobstore="default",
+        kwargs={"send_fn": send_telegram_message},
+        replace_existing=True,
+        coalesce=True,
+        max_instances=1,
+        misfire_grace_time=900,
+    )
+
+
 def scheduler_summary(scheduler: BackgroundScheduler) -> list[dict]:
     started_here = False
     try:
@@ -103,9 +156,11 @@ def scheduler_summary(scheduler: BackgroundScheduler) -> list[dict]:
         if started_here and scheduler.running:
             scheduler.shutdown(wait=False)
 
+
 if __name__ == "__main__":
     s = build_scheduler()
     register_example_jobs(s)
+    register_runtime_jobs(s)
     s.start()
     print("scheduler_started")
     try:

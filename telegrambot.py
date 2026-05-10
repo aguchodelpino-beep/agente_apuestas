@@ -10,6 +10,9 @@ from handlers import (
     handle_eventos_futbol,
     handle_eventos_tenis,
 )
+from departments.deportes.futbol.handlers import handle_futbol_picks
+from departments.deportes.basket.handlers import handle_basket_picks
+from departments.deportes.tenis.handlers import handle_tenis_picks
 
 ROOT = Path(__file__).resolve().parent
 ENV_PATH = ROOT / ".env"
@@ -48,7 +51,10 @@ def register_handlers() -> dict:
             "🤖 Bot activo.\n\nComandos disponibles:\n"
             "/eventostenis\n"
             "/eventosfutbol\n"
-            "/eventosbasket"
+            "/eventosbasket\n"
+            "/tenispicks\n"
+            "/futbolpicks\n"
+            "/basketpicks"
         )
 
     @bot.message_handler(commands=["eventostenis"])
@@ -66,14 +72,37 @@ def register_handlers() -> dict:
         text = handle_eventos_basket()
         bot.reply_to(message, text, parse_mode="Markdown")
 
+    @bot.message_handler(commands=["tenispicks"])
+    def cmd_tenis_picks(message):
+        text = handle_tenis_picks()
+        bot.reply_to(message, text, parse_mode="Markdown")
+
+    @bot.message_handler(commands=["futbolpicks"])
+    def cmd_futbol_picks(message):
+        text = handle_futbol_picks()
+        bot.reply_to(message, text, parse_mode="Markdown")
+
+    @bot.message_handler(commands=["basketpicks"])
+    def cmd_basket_picks(message):
+        text = handle_basket_picks()
+        bot.reply_to(message, text, parse_mode="Markdown")
+
     return {
         "status": "ok",
-        "handlers": ["start", "eventostenis", "eventosfutbol", "eventosbasket"],
+        "handlers": [
+            "start",
+            "eventostenis",
+            "eventosfutbol",
+            "eventosbasket",
+            "tenispicks",
+            "futbolpicks",
+            "basketpicks",
+        ],
     }
 
 def self_test() -> bool:
     data = register_handlers()
-    return data.get("status") == "ok" and len(data.get("handlers", [])) >= 4
+    return data.get("status") == "ok" and len(data.get("handlers", [])) >= 7
 
 def main() -> None:
     register_handlers()

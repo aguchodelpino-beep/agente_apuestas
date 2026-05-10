@@ -121,3 +121,14 @@ def build_event_groups(limit: int = 10) -> list[dict[str, Any]]:
 def build_tour_cards(tour: str, limit: int = 10) -> list[dict[str, Any]]:
     rows = repo.get_events_by_tour(tour=tour, limit=limit)
     return [normalize_card(row, i) for i, row in enumerate(rows, start=1)]
+
+# --- TENIS COMPAT PATCH ---
+def get_fixtures(*args, **kwargs):
+    return []
+
+def get_live(*args, **kwargs):
+    return []
+
+def get_one(*args, **kwargs):
+    return {}
+

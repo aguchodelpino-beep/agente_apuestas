@@ -36,7 +36,7 @@ def _row_tour(row: dict[str, Any]) -> str:
             if isinstance(value, str) and value.strip():
                 return value.strip()
 
-    return "Tenis"
+    return "Basket"
 
 
 def _row_title(row: dict[str, Any]) -> str:

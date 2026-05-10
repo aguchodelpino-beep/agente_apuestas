@@ -7,7 +7,6 @@ from shared.datetime_utils import today_str
 
 SPORT = "futbol"
 
-
 def _row_start(row: dict[str, Any]) -> str:
     return str(
         row.get("commence_time")
@@ -18,7 +17,6 @@ def _row_start(row: dict[str, Any]) -> str:
         or row.get("scheduled")
         or ""
     ).strip()
-
 
 def _row_tour(row: dict[str, Any]) -> str:
     league = row.get("league")
@@ -36,8 +34,7 @@ def _row_tour(row: dict[str, Any]) -> str:
             if isinstance(value, str) and value.strip():
                 return value.strip()
 
-    return "Tenis"
-
+    return "Fútbol"
 
 def _row_title(row: dict[str, Any]) -> str:
     home = (
@@ -56,25 +53,20 @@ def _row_title(row: dict[str, Any]) -> str:
     )
     return f"{home} vs {away}"
 
-
 def _sorted_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda row: (_row_start(row), _row_tour(row), _row_title(row)))
-
 
 def list_fixtures() -> list[dict[str, Any]]:
     return load_sport_day(SPORT, today_str())
 
-
 def list_live_fixtures() -> list[dict[str, Any]]:
     return [item for item in list_fixtures() if item.get("live") is True]
-
 
 def get_fixture_by_id(fixture_id: str) -> dict[str, Any] | None:
     for item in list_fixtures():
         if item.get("fixture_id") == fixture_id:
             return item
     return None
-
 
 def get_today_events() -> list[dict[str, Any]]:
     today = today_str()
@@ -85,13 +77,11 @@ def get_today_events() -> list[dict[str, Any]]:
             rows.append(item)
     return _sorted_rows(rows)
 
-
 def get_upcoming_events(limit: int = 10) -> list[dict[str, Any]]:
     rows = _sorted_rows(list_fixtures())
     if limit <= 0:
         return rows
     return rows[:limit]
-
 
 def get_events_by_tour(tour: str, limit: int = 10) -> list[dict[str, Any]]:
     needle = (tour or "").strip().lower()
