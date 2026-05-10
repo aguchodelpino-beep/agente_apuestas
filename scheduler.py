@@ -9,7 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
-from jobs.line_movement_alert import run_line_movement_alert
+from departments.jobs.line_movement_alert import run_line_movement_alert
 from shared.providers.tenis_provider import fetch_tennis_events
 from shared.providers.futbol_provider import fetch_futbol_events
 from shared.providers.basket_provider import fetch_basket_events

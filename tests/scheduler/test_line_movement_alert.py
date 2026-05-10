@@ -1,7 +1,7 @@
 import sqlite3
 import pytest
 from pathlib import Path
-from jobs.line_movement_alert import (
+from departments.jobs.line_movement_alert import (
     scan_line_movements,
     format_line_movement_message,
     run_line_movement_alert,

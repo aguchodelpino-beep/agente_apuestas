@@ -9,7 +9,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 
 def run_nightly_pipeline():
-    from jobs.nightly_pipeline import run as nightly_run
+    from departments.jobs.nightly_pipeline import run as nightly_run
     nightly_run(dry_run=False)
 
 
