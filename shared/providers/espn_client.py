@@ -27,26 +27,26 @@ GROUP_MAP: Dict[str, List[str]] = {
     "tenis":  ["tennis_atp_italian_open", "tennis_wta_italian_open"],
 }
 
-def _fetch(sport_path: str) -> List[Dict[str, Any]]:
+def _fetch(sport_path: str, date_str: str | None = None) -> List[Dict[str, Any]]:
     from datetime import datetime, timezone, timedelta
-    url = f"{BASE}/{sport_path}/scoreboard"
+    now = datetime.now(timezone.utc)
+    # para tenis: pedir los próximos 3 días con dates param
+    if "tennis" in sport_path:
+        today = now.strftime("%Y%m%d")
+        url = f"{BASE}/{sport_path}/scoreboard?dates={today}"
+    else:
+        url = f"{BASE}/{sport_path}/scoreboard"
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     try:
         with urllib.request.urlopen(req, timeout=8) as r:
             events = json.loads(r.read()).get("events", [])
-        # filtrar solo eventos de hoy en adelante
-        now = datetime.now(timezone.utc)
-        cutoff = (now - timedelta(hours=3)).isoformat()
+        # filtrar eventos finalizados (solo pendientes o en curso)
         filtered = []
         for ev in events:
-            ev_date = ev.get("date", "")
-            try:
-                ev_dt = datetime.fromisoformat(ev_date.replace("Z", "+00:00"))
-                if ev_dt >= now - timedelta(hours=3):
-                    filtered.append(ev)
-            except Exception:
+            status_type = ev.get("status", {}).get("type", {}).get("name", "")
+            if status_type not in ("STATUS_FINAL", "STATUS_POSTPONED", "STATUS_CANCELED"):
                 filtered.append(ev)
-        return filtered
+        return filtered if filtered else events  # si todo está final, devolver todos (fallback)
     except Exception as exc:
         import sys
         print(f"[espn_client] {sport_path} failed: {exc}", file=sys.stderr)
