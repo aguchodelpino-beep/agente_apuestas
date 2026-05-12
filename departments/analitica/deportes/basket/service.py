@@ -6,7 +6,7 @@ from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
 from departments.analitica.models import BetOpportunity
 from shared.prob_from_odds import extract_odds_1x2, fair_probs_1x2
 
-BETS_DB = "data/bets.db"
+BETS_DB = "data/history/bets_history.sqlite"
 _EDGE_BOOST = 0.01  # 1% de ventaja informacional asumida
 
 
