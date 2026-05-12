@@ -10,8 +10,9 @@ BETS_DB = "data/bets.db"
 _EDGE_BOOST = 0.01  # 1% de ventaja informacional asumida
 
 
-def record_bet(db: str, **kwargs: Any) -> None:
-    pass
+def record_bet(db: str, **kwargs: Any) -> int:
+    from shared.bets_history_repo import record_bet as _rbr
+    return _rbr(db, **kwargs)
 
 
 def _row_title(row: dict[str, Any]) -> str:

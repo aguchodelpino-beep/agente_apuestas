@@ -47,7 +47,7 @@ def test_build_tenis_pick_messages_idempotent(monkeypatch):
     monkeypatch.setattr(
         tenis_service,
         "record_bet",
-        lambda payload: recorded_bet_payloads.append(payload) or {"bet_id": "test123"},
+        lambda db, **kw: recorded_bet_payloads.append(kw) or 1,
     )
     monkeypatch.setattr("sqlite3.connect", _mock_sqlite_empty)
 
@@ -92,7 +92,7 @@ def test_build_tenis_pick_messages_skips_no_bet(monkeypatch):
     monkeypatch.setattr(
         tenis_service,
         "record_bet",
-        lambda payload: recorded_bet_payloads.append(payload) or {"bet_id": "test123"},
+        lambda db, **kw: recorded_bet_payloads.append(kw) or 1,
     )
     monkeypatch.setattr(
         tenis_service,

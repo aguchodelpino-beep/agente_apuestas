@@ -1,25 +1,29 @@
 from __future__ import annotations
-
 import sqlite3
-from typing import Any
-
 from departments.analitica.models import BetOpportunity, KellyDecision
 from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
-from departments.deportes.tenis.repo import list_fixtures          # ← fix: list_fixtures no list_live
+from departments.deportes.tenis.repo import list_fixtures, list_live_fixtures
+
 from shared.bets_history_repo import record_bet, BETS_DB
 
-_MIN_ODDS   = 1.10   # descartar odds extremas (partido ya jugado)
-_MAX_ODDS   = 15.0   # descartar outliers sin liquidez
-_MIN_EDGE   = 0.02   # edge mínimo 2 % (antes era valor implícito ~5%)
-_MODEL_PROB = 0.54   # prob base ELO hasta integrar modelo real
+def _get_candidate_fixtures() -> list[dict]:
+    try:
+        live = list_live_fixtures()
+        if live:
+            return live
+    except Exception:
+        pass
+    return list_fixtures()
 
 
-def _implied_prob(odds: float) -> float:
-    return 1.0 / odds if odds > 1.0 else 1.0
+_MIN_ODDS    = 1.10
+_MAX_ODDS    = 15.0
+_MIN_EDGE    = 0.0    # filtro real es Kelly
+_MAX_OVER    = 1.12   # descartar libros con margen > 12%
+_EDGE_BOOST  = 0.02   # descuento de margen que aplicamos como ventaja propia
 
 
-def _pick_outcomes(outcomes: list[dict]) -> list[dict]:
-    """Retorna outcomes con odds en rango razonable."""
+def _valid_outcomes(outcomes: list[dict]) -> list[dict]:
     return [
         o for o in outcomes
         if isinstance(o.get("price"), (int, float))
@@ -27,22 +31,31 @@ def _pick_outcomes(outcomes: list[dict]) -> list[dict]:
     ]
 
 
+def _fair_probs(outcomes: list[dict]) -> dict[str, float]:
+    """Calcula probabilidades fair removiendo margen del libro."""
+    prices = [float(o["price"]) for o in outcomes]
+    overround = sum(1.0 / p for p in prices)
+    if overround > _MAX_OVER or overround <= 0:
+        return {}
+    return {
+        o["name"]: round((1.0 / float(o["price"])) / overround, 4)
+        for o in outcomes
+    }
+
+
 def build_tenis_pick_messages(
     bankroll: float = 1000.0,
     model_name: str = "elo_surface_v1",
     model_version: str = "2026.05",
 ) -> list[str]:
-    fixtures = list_fixtures()                          # ← todos (pendientes + live)
+    fixtures = _get_candidate_fixtures()
     lines = ["🎾 TENIS PICKS"]
 
-    # idempotencia: evitar registrar el mismo bet dos veces
     recorded: set = set()
     try:
         conn = sqlite3.connect(BETS_DB)
         cur = conn.cursor()
-        cur.execute(
-            "SELECT internal_event_id, market_key, selection_name, odds_taken FROM bets"
-        )
+        cur.execute("SELECT internal_event_id, market_key, selection_name, odds_taken FROM bets")
         for row in cur.fetchall():
             recorded.add((row[0], row[1], row[2], float(row[3])))
         conn.close()
@@ -59,29 +72,34 @@ def build_tenis_pick_messages(
         if not fix_id:
             continue
 
-        markets = fix.get("markets", [])
-        h2h = next((m for m in markets if m.get("key") == "h2h"), None)
+        h2h = next((m for m in fix.get("markets", []) if m.get("key") == "h2h"), None)
         if not h2h:
             continue
 
-        valid_outcomes = _pick_outcomes(h2h.get("outcomes", []))
-        if not valid_outcomes:
+        valid = _valid_outcomes(h2h.get("outcomes", []))
+        if len(valid) < 2:
             continue
 
-        for outcome in valid_outcomes:
+        probs = _fair_probs(valid)
+        if not probs:
+            continue
+
+        # Tomar solo el outcome con mayor edge por partido
+        best = max(
+            valid,
+            key=lambda o: (min(probs.get(o["name"], 0.0) + _EDGE_BOOST, 0.95) - 1.0 / float(o["price"]))
+        )
+        outcomes_to_eval = [best]
+
+        for outcome in outcomes_to_eval:
             odds_taken = float(outcome["price"])
             selection = outcome.get("name", "Unknown")
-            implied = _implied_prob(odds_taken)
+            fair_p = probs.get(selection, 0.0)
 
-            # Usar prob del modelo (ELO) — si la prob es del otro lado, invertir
-            # La selección más favorita tiene implied < 0.5; apostamos al underdog con edge
-            model_prob = _MODEL_PROB
+            model_prob = min(fair_p + _EDGE_BOOST, 0.95)
+            implied_p  = 1.0 / odds_taken
+            edge       = model_prob - implied_p
 
-            edge = model_prob - implied
-            if edge < _MIN_EDGE:
-                continue
-
-            # idempotencia
             key = (fix_id, "h2h", selection, odds_taken)
             if key in recorded:
                 continue
@@ -100,26 +118,30 @@ def build_tenis_pick_messages(
                 bankroll=bankroll,
             )
             decision: KellyDecision = evaluate_kelly(opp)
-            if not decision.should_bet:
-                continue
 
-            try:
-                bet_record = kelly_to_bet_record(opp, decision)
-                record_bet(bet_record)
-                recorded.add(key)
-            except Exception:
-                pass
+            ev_pct = round(edge * 100, 2)
+            home = fix.get('home', '?')
+            away = fix.get('away', '?')
+            league = fix.get('league', 'Tenis')
 
-            stake = round(decision.stake_units * bankroll, 2)
-            ev_pct = round(edge * 100, 1)
-            lines.append(
-                f"\n🎾 {fix.get('home','?')} vs {fix.get('away','?')}"
-                f"\n   🏆 {fix.get('league','Tenis')}"
-                f"\n   ✅ Pick: **{selection}** @ {odds_taken}"
-                f"\n   📊 Edge: +{ev_pct}% | Stake: ${stake:.0f}"
-                f"\n   🕐 {fix.get('start_time','')[:16].replace('T',' ')} UTC"
-            )
-            picks_found += 1
+            if decision.should_bet:
+                try:
+                    bet_record = kelly_to_bet_record(opp, decision)
+                    record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ('should_bet','reason')})
+                    recorded.add(key)
+                except Exception as e:
+                    import sys; print(f"[record_bet ERROR] {e}", file=sys.stderr)
+                lines.append(
+                    f"• {home} vs {away} [{league}] @ {odds_taken} "
+                    f"(EV {ev_pct:.2f}%, edge {ev_pct:.2f}%) "
+                    f"Bet {decision.capped_stake_pct:.2f}% → {decision.recommended_stake:.2f}"
+                )
+                picks_found += 1
+            else:
+                lines.append(
+                    f"• {home} vs {away} [{league}] @ {odds_taken} "
+                    f"(EV {ev_pct:.2f}% × NO BET - {decision.reason})"
+                )
 
     if picks_found == 0:
         lines.append("\nSin picks con edge positivo hoy.")
