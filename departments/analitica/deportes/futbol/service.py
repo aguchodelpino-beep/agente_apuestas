@@ -5,6 +5,7 @@ from typing import Any
 
 from departments.analitica.models import BetOpportunity
 from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
+from shared.prob_from_odds import extract_odds_1x2, fair_probs_1x2
 from departments.deportes.futbol.repo import list_live_fixtures
 from shared.bets_history_repo import BETS_DB, record_bet
 
@@ -67,7 +68,14 @@ def build_futbol_pick_messages(
         if key in recorded:
             continue
 
-        model_prob = 0.55
+        # Extraer probabilidades fair desde odds 1X2
+        odds_struct = extract_odds_1x2(fix)
+        if odds_struct:
+            h_odds, d_odds, a_odds = odds_struct
+            probs = fair_probs_1x2(h_odds, d_odds, a_odds)
+            model_prob = probs["home"]
+        else:
+            model_prob = 1.0 / odds_taken  # fallback: implied prob sin margen
 
         league = fix.get("league") or fix.get("competition") or "Futbol"
         opp = BetOpportunity(
@@ -88,7 +96,7 @@ def build_futbol_pick_messages(
 
         if decision.should_bet:
             bet_record = kelly_to_bet_record(opp, decision, ticket_source="futbol_service")
-            record_bet(bet_record)
+            record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ('should_bet','reason')})
             recorded.add(key)
 
         home = fix.get("home") or fix.get("home_team") or "Local"
