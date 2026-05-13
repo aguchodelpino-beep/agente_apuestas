@@ -119,7 +119,34 @@ def register_example_jobs(scheduler: BackgroundScheduler) -> None:
     return None
 
 
+def _refresh_basket_with_json() -> dict:
+    """Refresca basket y actualiza live_today.json con filtro ECT."""
+    import json
+    from pathlib import Path
+    result = refresh_sport("basket")
+    try:
+        events = fetch_basket_events()
+        rows = [
+            {
+                "id": e["fixture_id"],
+                "home": e["home"],
+                "away": e["away"],
+                "datetime": e["start_time"],
+                "league": e["league"],
+                "status": e["status"],
+                "_source": e["source"],
+            }
+            for e in events
+        ]
+        out = Path("departments/deportes/basket/live_today.json")
+        out.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as exc:
+        result["live_today_error"] = str(exc)
+    return result
+
+
 def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
+    # Alertas de movimiento de línea
     scheduler.add_job(
         run_line_movement_alert,
         trigger="interval",
@@ -133,6 +160,24 @@ def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
         max_instances=1,
         misfire_grace_time=900,
     )
+    # Refresco de deportes cada 30 min
+    for job_id, func, label in [
+        ("refresh_tenis",  refresh_tenis,              "Tenis – refresh ESPN"),
+        ("refresh_futbol", refresh_futbol,             "Fútbol – refresh OpenLigaDB"),
+        ("refresh_basket", _refresh_basket_with_json,  "Basket – refresh ESPN + live_today.json"),
+    ]:
+        scheduler.add_job(
+            func,
+            trigger="interval",
+            minutes=30,
+            id=job_id,
+            name=label,
+            jobstore="default",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+            misfire_grace_time=300,
+        )
 
 
 def scheduler_summary(scheduler: BackgroundScheduler) -> list[dict]:

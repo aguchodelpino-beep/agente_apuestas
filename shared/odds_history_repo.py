@@ -257,3 +257,6 @@ def ingest_enriched_directory(
         )
 
     return total_inserted
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

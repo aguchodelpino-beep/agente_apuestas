@@ -37,3 +37,6 @@ BASKET_ALLOWED_LEAGUES = {
     "basketball_euroleague": "Euroleague",
     "basketball_wnba": "WNBA",
 }
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

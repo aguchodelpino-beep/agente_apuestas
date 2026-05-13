@@ -115,3 +115,6 @@ def list_fixtures_by_league(league: int, season: int, next_n: Optional[int] = No
         })
 
     return out
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

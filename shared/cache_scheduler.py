@@ -200,3 +200,6 @@ def start_cache_scheduler() -> BackgroundScheduler:
     logger.info("scheduler cache iniciado: diario 02:00 %s", TZ)
     _scheduler = scheduler
     return scheduler
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

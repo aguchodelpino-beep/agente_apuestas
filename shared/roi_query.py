@@ -108,3 +108,6 @@ def roi_summary(db_path: str = DB_PATH) -> dict:
     """).fetchone()
     conn.close()
     return dict(row)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

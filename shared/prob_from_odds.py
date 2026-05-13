@@ -84,3 +84,6 @@ def extract_odds_1x2(fixture: dict) -> Optional[tuple[float, float, float]]:
         return float(home_val), float(draw_val), float(away_val)
     except (TypeError, ValueError):
         return None
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

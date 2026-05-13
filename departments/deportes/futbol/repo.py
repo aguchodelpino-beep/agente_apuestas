@@ -93,3 +93,6 @@ def get_events_by_tour(tour: str, limit: int = 10) -> list[dict[str, Any]]:
     if limit <= 0:
         return rows
     return rows[:limit]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

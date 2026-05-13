@@ -1,13 +1,29 @@
 from __future__ import annotations
+
 from typing import Any
 
 from departments.deportes.basketball_repo import load_basket_events as list_live_fixtures
 from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
 from departments.analitica.models import BetOpportunity
-from shared.prob_from_odds import extract_odds_1x2, fair_probs_1x2
+from shared.model_hub import build_model_snapshot
+
+def _model_trace(snapshot: "dict | None", model_name: str) -> str:
+    if not snapshot:
+        return ""
+    e = snapshot.get("ensemble") or {}
+    ph = e.get("prob_home")
+    pd_ = e.get("prob_draw")
+    pa = e.get("prob_away")
+    parts = []
+    if isinstance(ph, float): parts.append(f"H={ph:.3f}")
+    if isinstance(pd_, float): parts.append(f"D={pd_:.3f}")
+    if isinstance(pa, float): parts.append(f"A={pa:.3f}")
+    return f"  📊 {model_name}: {' '.join(parts)}" if parts else ""
+
+
 
 BETS_DB = "data/history/bets_history.sqlite"
-_EDGE_BOOST = 0.01  # 1% de ventaja informacional asumida
+_EDGE_BOOST = 0.01
 
 
 def record_bet(db: str, **kwargs: Any) -> int:
@@ -28,6 +44,26 @@ def _row_league(row: dict[str, Any]) -> str:
     return "Basket"
 
 
+def _safe_prob(value: Any) -> float | None:
+    if isinstance(value, (int, float)):
+        v = float(value)
+        if 0.0 < v < 1.0:
+            return v
+    return None
+
+
+def _side_from_selection(row: dict[str, Any], selection_name: str) -> str | None:
+    selection = str(selection_name or "").strip().lower()
+    home = str(row.get("home") or row.get("home_team") or "").strip().lower()
+    away = str(row.get("away") or row.get("away_team") or "").strip().lower()
+
+    if selection in ("home", "local", "1") or (home and selection == home):
+        return "home"
+    if selection in ("away", "visitor", "visitante", "2") or (away and selection == away):
+        return "away"
+    return None
+
+
 def build_basket_pick_messages(bankroll: float = 1000.0) -> list[str]:
     rows = list_live_fixtures()
     if not rows:
@@ -43,7 +79,6 @@ def build_basket_pick_messages(bankroll: float = 1000.0) -> list[str]:
         if not isinstance(markets, list):
             continue
 
-        # Buscar market h2h / match_winner
         odds_row = next(
             (m for m in markets if m.get("key") in ("h2h", "match_winner")), None
         )
@@ -51,11 +86,17 @@ def build_basket_pick_messages(bankroll: float = 1000.0) -> list[str]:
             continue
 
         outcomes = odds_row.get("outcomes", [])
-        # Calcular fair probs sobre todos los outcomes del mercado
         prices = [float(o["price"]) for o in outcomes if isinstance(o.get("price"), (int, float)) and float(o["price"]) > 1.0]
         if len(prices) < 2:
             continue
         overround = sum(1.0 / p for p in prices)
+
+        snapshot = None
+        try:
+            snapshot = build_model_snapshot("basket", row)
+        except Exception:
+            snapshot = None
+        ensemble = (snapshot or {}).get("ensemble") or {}
 
         for outcome in outcomes:
             price = outcome.get("price")
@@ -63,9 +104,17 @@ def build_basket_pick_messages(bankroll: float = 1000.0) -> list[str]:
                 continue
             odds_taken = float(price)
             fair_p = (1.0 / odds_taken) / overround
-            model_prob = min(fair_p + _EDGE_BOOST, 0.95)
-            market_key = odds_row.get("key") or "match_winner"
+
             selection_name = outcome.get("name") or "?"
+            side = _side_from_selection(row, selection_name)
+            snapshot_prob = None
+            if side == "home":
+                snapshot_prob = _safe_prob(ensemble.get("prob_home"))
+            elif side == "away":
+                snapshot_prob = _safe_prob(ensemble.get("prob_away"))
+
+            model_prob = snapshot_prob if snapshot_prob is not None else min(fair_p + _EDGE_BOOST, 0.95)
+            market_key = odds_row.get("key") or "match_winner"
             key = (fix_id, market_key, selection_name, odds_taken)
             if key in already_bet:
                 continue
@@ -85,15 +134,17 @@ def build_basket_pick_messages(bankroll: float = 1000.0) -> list[str]:
             )
             decision = evaluate_kelly(opp)
 
+            trace = _model_trace(snapshot, "basket_ensemble_v1")
             if decision.should_bet:
                 bet_record = kelly_to_bet_record(opp, decision, ticket_source="basket_service")
                 record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ("should_bet", "reason")})
                 picks_found += 1
-                lines.append(
+                pick_line = (
                     f"• {title} [{league}] @ {odds_taken} "
                     f"(EV {decision.ev_pct:.2f}%, edge {decision.edge_pct:.2f}%) "
                     f"→ Bet {decision.recommended_stake:.2f}u"
                 )
+                lines.append(pick_line + (f"\n{trace}" if trace else ""))
             else:
                 lines.append(
                     f"• {title} [{league}] @ {odds_taken} "

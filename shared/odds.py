@@ -113,3 +113,6 @@ probtodecimal = prob_to_decimal
 probtoamerican = prob_to_american
 americantodecimal = american_to_decimal
 decimaltoamerican = decimal_to_american
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

@@ -85,3 +85,6 @@ def get_region_name(region: Region) -> str:
         Region.ASIA_ARABIA: "🕌 ASIA/ARABIA",
         Region.BASKET: "🏀 BASKET",
     }[region]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

@@ -27,3 +27,6 @@ class JsonCacheRepository(FixtureRepository):
             "records_count": data.get("records_count", len(data.get("payload", []))),
             "payload_hash": data.get("payload_hash"),
         }
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

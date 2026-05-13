@@ -8,3 +8,6 @@ FOOTBALL_DATA_KEY = getattr(Config, "FOOTBALL_DATA_KEY", "") or ""
 SPORTSGAME_ODDS_KEY = getattr(Config, "SPORTSGAME_ODDS_KEY", "") or ""
 ALL_SPORTS_API_KEY = getattr(Config, "ALL_SPORTS_API_KEY", "") or ""
 TELEGRAM_TOKEN = getattr(Config, "TELEGRAM_TOKEN", "") or ""
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

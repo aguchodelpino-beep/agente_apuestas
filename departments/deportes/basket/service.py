@@ -121,3 +121,6 @@ def build_event_groups(limit: int = 10) -> list[dict[str, Any]]:
 def build_tour_cards(tour: str, limit: int = 10) -> list[dict[str, Any]]:
     rows = repo.get_events_by_tour(tour=tour, limit=limit)
     return [normalize_card(row, i) for i, row in enumerate(rows, start=1)]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

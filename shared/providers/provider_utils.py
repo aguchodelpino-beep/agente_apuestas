@@ -3,12 +3,25 @@ from __future__ import annotations
 from typing import Any
 
 
-def get_json(*args, **kwargs):
-    return {}
+def get_json(url: str, *, timeout: int = 10, headers: dict | None = None, **kwargs):
+    import requests
+    try:
+        r = requests.get(url, headers=headers or {}, timeout=timeout)
+        r.raise_for_status()
+        return r.json()
+    except Exception:
+        return {}
 
 
-def safe_get_json(*args, **kwargs):
-    return {}
+def safe_get_json(url: str, *, timeout: int = 10, headers: dict | None = None, **kwargs):
+    import requests
+    try:
+        r = requests.get(url, headers=headers or {}, timeout=timeout)
+        if r.status_code == 200:
+            return r.json()
+        return {}
+    except Exception:
+        return {}
 
 
 def env(*args, **kwargs):
@@ -63,3 +76,6 @@ def normalize_fixture_row(item: dict[str, Any], *, sport_name: str, time_field: 
         time_field: item.get("startDate") or item.get(time_field, ""),
         "raw": item,
     }
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

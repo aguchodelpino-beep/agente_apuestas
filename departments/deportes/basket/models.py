@@ -40,3 +40,6 @@ class PickCandidate:
     edge: float = 0.0
     confidence: float = 0.0
     raw: dict[str, Any] = field(default_factory=dict)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

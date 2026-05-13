@@ -44,3 +44,6 @@ def nba_get_teams(page: int = 1, per_page: int = 30) -> dict[str, Any]:
 
 def nba_get_games_by_date(date_str: str, per_page: int = 25) -> dict[str, Any]:
     return _get("/nba/v1/games", {"dates[]": date_str, "per_page": per_page})
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

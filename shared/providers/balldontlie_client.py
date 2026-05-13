@@ -51,3 +51,6 @@ def fetch_fixtures(sport_key: str = "basketball_nba") -> List[Dict[str, Any]]:
             "_sport_key": sport_key,
         })
     return result
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

@@ -112,3 +112,6 @@ def refresh_all() -> dict[str, int]:
         except Exception:
             out[sport] = 0
     return out
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

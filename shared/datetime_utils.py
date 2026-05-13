@@ -102,3 +102,6 @@ def hour_label(value):
         return s[11:16]
     return s[:5]
 
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

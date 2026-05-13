@@ -10,3 +10,6 @@ class BaseProvider(ABC):
     @abstractmethod
     async def fetch(self) -> list[dict[str, Any]]:
         raise NotImplementedError
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

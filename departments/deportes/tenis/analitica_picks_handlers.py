@@ -21,3 +21,6 @@ def handle_tenis_picks_analitica(*args, **kwargs) -> str:
 
     except Exception as e:
         return f"🎾 TENIS PICKS\n\nError al procesar picks: {e}"
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

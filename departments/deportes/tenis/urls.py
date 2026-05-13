@@ -7,3 +7,6 @@ urlpatterns = [
     ("tenis/live/", tenis_live),
     ("tenis/<fixture_id>/", tenis_detail),
 ]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

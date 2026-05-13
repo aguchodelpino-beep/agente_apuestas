@@ -113,3 +113,6 @@ def save_daily_tennis_cache(sport_keys: list[str] | None = None) -> Path:
 if __name__ == "__main__":
     path = save_daily_tennis_cache()
     print(path)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

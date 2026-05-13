@@ -148,3 +148,6 @@ def match_provider_events(
             matches.append(best_match)
 
     return matches
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

@@ -9,3 +9,6 @@ def handle_nbajuegos(date_str: str | None = None) -> str:
     if not date_str:
         date_str = datetime.utcnow().strftime("%Y-%m-%d")
     return format_nba_games(date_str)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

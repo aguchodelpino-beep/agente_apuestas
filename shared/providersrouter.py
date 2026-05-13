@@ -39,3 +39,6 @@ def get_fixtures_multi(sport: str) -> List[Dict[str, Any]]:
     #         pass
     
     return all_fixtures
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

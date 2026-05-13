@@ -55,3 +55,6 @@ def send_telegram_message(text: str) -> None:
 
     bot = telebot.TeleBot(token, parse_mode="Markdown")
     bot.send_message(chat_id=chat_id, text=text, parse_mode="Markdown")
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

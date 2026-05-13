@@ -3,37 +3,66 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from shared.providers.provider_utils import safe_get_json, normalize_status
-
 UTC = timezone.utc
 
-def _norm_tennis_event(ev: dict[str, Any]) -> dict[str, Any]:
-    comp = ev.get("competitions", [{}])[0]
-    competitors = comp.get("competitors", [])
-    home = competitors[0].get("athlete", {}).get("displayName") if len(competitors) > 0 else "TBD"
-    away = competitors[1].get("athlete", {}).get("displayName") if len(competitors) > 1 else "TBD"
-    status = normalize_status(ev.get("status", {}).get("type", {}).get("state"))
-    league = ev.get("league", {}).get("name") or comp.get("league", {}).get("name") or "Tennis"
-    start_time = ev.get("date") or datetime.now(UTC).isoformat()
+
+def _norm_odds_tennis(ev: dict[str, Any], sport_key: str, title: str) -> dict[str, Any]:
+    home = ev.get("home_team", "TBD")
+    away = ev.get("away_team", "TBD")
+    start_time = ev.get("commence_time", datetime.now(UTC).isoformat())
     fixture_id = str(ev.get("id") or f"{home}-{away}-{start_time}")
     return {
         "fixture_id": fixture_id,
         "sport": "tenis",
-        "league": league,
+        "league": title,
         "home": home,
         "away": away,
         "start_time": start_time,
-        "status": status,
-        "source": "espn",
+        "status": "scheduled",
+        "source": "oddsapi",
         "markets": [],
-        "raw": {
-            "shortName": ev.get("shortName"),
-            "status_detail": ev.get("status", {}).get("type", {}).get("description"),
-        },
+        "raw": {"sport_key": sport_key},
     }
 
+
 def fetch_tennis_events() -> list[dict[str, Any]]:
-    url = "https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard"
-    data = safe_get_json(url)
-    events = data.get("events", []) or []
-    return [_norm_tennis_event(ev) for ev in events]
+    from shared.providers.oddsapi_client import _get
+    import sys
+
+    # 1. Obtener torneos activos de tenis
+    try:
+        sports_data, _ = _get("sports", {"all": "false"})
+    except Exception as exc:
+        print(f"[tenis_provider] error obteniendo sports: {exc}", file=sys.stderr)
+        return []
+
+    active_tennis = [
+        s for s in sports_data
+        if "tennis" in s.get("key", "").lower() and s.get("active", False)
+    ]
+
+    if not active_tennis:
+        print("[tenis_provider] sin torneos de tenis activos", file=sys.stderr)
+        return []
+
+    # 2. Obtener eventos de cada torneo activo
+    results = []
+    for sport in active_tennis:
+        sport_key = sport["key"]
+        title = sport.get("title", sport_key)
+        try:
+            data, _ = _get(
+                f"sports/{sport_key}/events",
+                {"dateFormat": "iso"},
+            )
+            if isinstance(data, list):
+                for ev in data:
+                    results.append(_norm_odds_tennis(ev, sport_key, title))
+        except Exception as exc:
+            print(f"[tenis_provider] {sport_key}: {exc}", file=sys.stderr)
+            continue
+
+    return results
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

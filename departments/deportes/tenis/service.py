@@ -124,7 +124,9 @@ def build_tour_cards(tour: str, limit: int = 10) -> list[dict[str, Any]]:
 
 # --- TENIS COMPAT PATCH ---
 def get_fixtures(*args, **kwargs):
-    return []
+    from shared.cache import load_sport_day
+    from shared.datetime_utils import today_str
+    return load_sport_day("tenis", today_str())
 
 def get_live(*args, **kwargs):
     return []
@@ -132,3 +134,6 @@ def get_live(*args, **kwargs):
 def get_one(*args, **kwargs):
     return {}
 
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

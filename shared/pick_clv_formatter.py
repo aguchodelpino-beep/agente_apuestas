@@ -28,3 +28,6 @@ def append_clv_to_pick_text(base_text: str, pick: Any) -> str:
     if not clv_line:
         return base_text
     return f"{base_text}\n{clv_line}"
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

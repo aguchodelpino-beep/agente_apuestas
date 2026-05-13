@@ -38,3 +38,6 @@ def build_sport_cache(
         json.dumps(out, ensure_ascii=False, indent=2)
     )
     return all_events
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

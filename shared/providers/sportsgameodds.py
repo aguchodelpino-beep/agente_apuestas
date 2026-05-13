@@ -50,3 +50,6 @@ def get_leagues(timeout: int = 10) -> Dict[str, Any]:
         return r.json()
     except:
         return {"raw_text": r.text[:1000]}
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

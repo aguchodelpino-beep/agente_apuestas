@@ -8,6 +8,30 @@ from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
 from shared.prob_from_odds import extract_odds_1x2, fair_probs_1x2
 from departments.deportes.futbol.repo import list_live_fixtures
 from shared.bets_history_repo import BETS_DB, record_bet
+from shared.model_hub import build_model_snapshot
+
+def _model_trace(snapshot: "dict | None", model_name: str) -> str:
+    if not snapshot:
+        return ""
+    e = snapshot.get("ensemble") or {}
+    ph = e.get("prob_home")
+    pd_ = e.get("prob_draw")
+    pa = e.get("prob_away")
+    parts = []
+    if isinstance(ph, float): parts.append(f"H={ph:.3f}")
+    if isinstance(pd_, float): parts.append(f"D={pd_:.3f}")
+    if isinstance(pa, float): parts.append(f"A={pa:.3f}")
+    return f"  📊 {model_name}: {' '.join(parts)}" if parts else ""
+
+
+
+
+def _safe_prob(value: Any) -> float | None:
+    if isinstance(value, (int, float)):
+        v = float(value)
+        if 0.0 < v < 1.0:
+            return v
+    return None
 
 
 def build_futbol_pick_messages(
@@ -68,14 +92,26 @@ def build_futbol_pick_messages(
         if key in recorded:
             continue
 
-        # Extraer probabilidades fair desde odds 1X2
-        odds_struct = extract_odds_1x2(fix)
-        if odds_struct:
-            h_odds, d_odds, a_odds = odds_struct
-            probs = fair_probs_1x2(h_odds, d_odds, a_odds)
-            model_prob = probs["home"]
-        else:
-            model_prob = 1.0 / odds_taken  # fallback: implied prob sin margen
+        model_prob = None
+
+        snapshot = None
+        try:
+            snapshot = build_model_snapshot("futbol", fix)
+        except Exception:
+            snapshot = None
+
+        if snapshot:
+            ensemble = snapshot.get("ensemble") or {}
+            model_prob = _safe_prob(ensemble.get("prob_home"))
+
+        if model_prob is None:
+            odds_struct = extract_odds_1x2(fix)
+            if odds_struct:
+                h_odds, d_odds, a_odds = odds_struct
+                probs = fair_probs_1x2(h_odds, d_odds, a_odds)
+                model_prob = probs["home"]
+            else:
+                model_prob = 1.0 / odds_taken
 
         league = fix.get("league") or fix.get("competition") or "Futbol"
         opp = BetOpportunity(
@@ -96,19 +132,21 @@ def build_futbol_pick_messages(
 
         if decision.should_bet:
             bet_record = kelly_to_bet_record(opp, decision, ticket_source="futbol_service")
-            record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ('should_bet','reason')})
+            record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ("should_bet", "reason")})
             recorded.add(key)
 
         home = fix.get("home") or fix.get("home_team") or "Local"
         away = fix.get("away") or fix.get("away_team") or "Visitante"
         title = fix.get("title") or f"{home} vs {away}"
 
+        trace = _model_trace(snapshot, model_name)
         if decision.should_bet:
-            lines.append(
+            pick_line = (
                 f"• {title} [{league}] @ {odds_taken} "
                 f"(EV {decision.ev_pct:.2f}%, edge {decision.edge_pct:.2f}%) "
                 f"Bet {decision.capped_stake_pct:.2f}% → {decision.recommended_stake:.2f}"
             )
+            lines.append(pick_line + (f"\n{trace}" if trace else ""))
         else:
             lines.append(
                 f"• {title} [{league}] @ {odds_taken} "

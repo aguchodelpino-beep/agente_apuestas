@@ -68,3 +68,6 @@ def handle_tenis_picks(*args, **kwargs) -> str:
     except Exception as e:
         return f"🎾 TENIS PICKS\n\nError al procesar picks: {e}"
 __all__ = ["build_event_cards", "handle_eventos_tenis", "handle_tenis_picks"]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

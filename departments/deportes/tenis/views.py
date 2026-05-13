@@ -32,3 +32,6 @@ def handle_tenis_picks(*args, **kwargs):
     except Exception:
         # 2. fallback a mensaje genérico
         return "🎾 TENIS PICKS\n\nSin picks disponibles en la capa analitica."
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

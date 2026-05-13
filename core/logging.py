@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging as _stdlib_logging
 import logging
 import os
 import traceback
@@ -85,3 +86,6 @@ __all__ = [
     "configure_logging",
     "get_logger",
 ]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

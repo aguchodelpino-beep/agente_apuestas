@@ -119,3 +119,6 @@ def render_picks(sport: str) -> str:
                 lines.append("   " + " | ".join(meta))
 
     return "\n".join(lines)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

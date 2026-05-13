@@ -80,3 +80,6 @@ def build_enriched_event(
         line_movement=extra.get("line_movement", []),
     )
     return event
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

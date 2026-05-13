@@ -26,3 +26,6 @@ class OddsCacheProvider:
         self.save_today(items)
         logger.info("provider_refresh sport=%s items=%s", self.sport, len(items))
         return items
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

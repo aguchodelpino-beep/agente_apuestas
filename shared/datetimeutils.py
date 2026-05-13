@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 def _parse_dt(value: str | None) -> datetime | None:
@@ -22,15 +22,21 @@ def todaystr() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
+_ECT = timezone(timedelta(hours=-5))  # Ecuador Time UTC-5
+
+
 def daylabel(value: str | None) -> str:
     dt = _parse_dt(value)
     if not dt:
         return "Sin fecha"
-    return dt.astimezone(timezone.utc).strftime("%Y-%m-%d")
+    return dt.astimezone(_ECT).strftime("%Y-%m-%d")
 
 
 def hourlabel(value: str | None) -> str:
     dt = _parse_dt(value)
     if not dt:
         return "--:--"
-    return dt.astimezone(timezone.utc).strftime("%H:%M")
+    return dt.astimezone(_ECT).strftime("%I:%M %p")
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

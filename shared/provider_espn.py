@@ -56,3 +56,6 @@ def get_tennis_news() -> Dict[str, Any]:
 
 def get_tennis_teams_like_listing() -> Dict[str, Any]:
     return espn_get("/tennis/atp/teams")
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

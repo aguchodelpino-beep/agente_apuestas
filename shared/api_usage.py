@@ -88,3 +88,6 @@ def build_daily_dashboard() -> dict[str, Any]:
         ),
     }
     return report
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

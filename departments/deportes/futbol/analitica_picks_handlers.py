@@ -14,3 +14,6 @@ def handle_futbol_picks_analitica(*args, **kwargs) -> str:
         model_version=model_version,
     )
     return "\n".join(lines)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

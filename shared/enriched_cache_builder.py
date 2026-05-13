@@ -95,3 +95,6 @@ def build_enriched_events(
         enriched.append(enriched_event.to_dict())
 
     return enriched
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

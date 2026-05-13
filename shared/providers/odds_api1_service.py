@@ -26,3 +26,6 @@ def fetch_soccer_fixtures() -> list[dict[str, Any]]:
 
 def fetch_basketball_fixtures() -> list[dict[str, Any]]:
     return fetch_normalized_fixtures_by_sport(SPORT_ID_BASKETBALL)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

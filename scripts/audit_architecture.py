@@ -55,6 +55,7 @@ allowed_root_dirs = {
     "log",
     "cache_diario",
     "cachediario",
+    "cache_enriched",
     "data",
     "fixtures",
     "tests",

@@ -7,3 +7,6 @@ urlpatterns = [
     ("basket/live/", basket_live),
     ("basket/<fixture_id>/", basket_detail),
 ]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

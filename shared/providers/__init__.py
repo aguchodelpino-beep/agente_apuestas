@@ -6,3 +6,6 @@ from .provider_utils import (
     merge_by_fixture_id,
     normalize_fixture_row,
 )
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

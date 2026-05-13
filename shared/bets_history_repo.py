@@ -222,3 +222,6 @@ def summarize_by(db_path, dimension: str) -> list[dict]:
 
 BETS_DB = "data/history/bets_history.sqlite"
 
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

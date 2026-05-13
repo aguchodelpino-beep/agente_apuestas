@@ -57,3 +57,6 @@ def enrich_pick_with_clv(
         clv_pct=calculate_clv_pct_decimal(_safe_float(opening_odds), _safe_float(closing_odds)),
         point_movement=calculate_point_movement(_safe_float(opening_point), _safe_float(closing_point)),
     )
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

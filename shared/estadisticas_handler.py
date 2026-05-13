@@ -59,3 +59,6 @@ def handle_estadisticas(db_path: str = BETS_DB) -> str:
         lines.append(f"  {league}: {l_bets} bets | PnL: {l_pnl:+.2f}u")
 
     return "\n".join(lines)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

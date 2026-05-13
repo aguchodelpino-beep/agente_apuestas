@@ -1,10 +1,28 @@
 from __future__ import annotations
 
+import math
+
 from departments.analitica.models import (
     BetOpportunity,
     KellyConfig,
     KellyDecision,
 )
+from shared.http_retry import CircuitBreaker, RetryConfig, with_retry
+
+
+__all__ = [
+    "CircuitBreaker",
+    "RetryConfig",
+    "with_retry",
+    "implied_prob_from_odds",
+    "expected_value_pct",
+    "full_kelly_pct",
+    "brier_score",
+    "log_loss",
+    "evaluate_kelly",
+    "kelly_to_bet_record",
+    "build_bets_report",
+]
 
 
 def implied_prob_from_odds(odds: float) -> float:
@@ -21,6 +39,24 @@ def full_kelly_pct(model_prob: float, odds: float) -> float:
     q = 1 - model_prob
     kelly = (b * model_prob - q) / b
     return round(kelly * 100, 2)
+
+
+def _clamp_probability(probability: float) -> float:
+    return min(max(float(probability), 0.0), 1.0)
+
+
+def brier_score(pred_prob: float, outcome: bool | int | float) -> float:
+    """Brier score para calibrar confianza: 0 es perfecto, 1 es peor."""
+    p = _clamp_probability(pred_prob)
+    y = 1.0 if bool(outcome) else 0.0
+    return round((p - y) ** 2, 6)
+
+
+def log_loss(pred_prob: float, outcome: bool | int | float, eps: float = 1e-15) -> float:
+    p = min(max(_clamp_probability(pred_prob), eps), 1.0 - eps)
+    y = 1.0 if bool(outcome) else 0.0
+    loss = -(y * math.log(p) + (1.0 - y) * math.log(1.0 - p))
+    return round(loss, 6)
 
 
 def evaluate_kelly(

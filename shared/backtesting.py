@@ -71,3 +71,6 @@ def format_backtest_report(report: BacktestReport) -> str:
             )
 
     return "\n".join(lines)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

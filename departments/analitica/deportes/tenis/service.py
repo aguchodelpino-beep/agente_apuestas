@@ -1,10 +1,29 @@
 from __future__ import annotations
+
 import sqlite3
+from typing import Any
+
 from departments.analitica.models import BetOpportunity, KellyDecision
 from departments.analitica.service import kelly_to_bet_record, evaluate_kelly
 from departments.deportes.tenis.repo import list_fixtures, list_live_fixtures
-
 from shared.bets_history_repo import record_bet, BETS_DB
+from shared.model_hub import build_model_snapshot
+
+def _model_trace(snapshot: "dict | None", model_name: str) -> str:
+    if not snapshot:
+        return ""
+    e = snapshot.get("ensemble") or {}
+    ph = e.get("prob_home")
+    pd_ = e.get("prob_draw")
+    pa = e.get("prob_away")
+    parts = []
+    if isinstance(ph, float): parts.append(f"H={ph:.3f}")
+    if isinstance(pd_, float): parts.append(f"D={pd_:.3f}")
+    if isinstance(pa, float): parts.append(f"A={pa:.3f}")
+    return f"  📊 {model_name}: {' '.join(parts)}" if parts else ""
+
+
+
 
 def _get_candidate_fixtures() -> list[dict]:
     try:
@@ -16,11 +35,19 @@ def _get_candidate_fixtures() -> list[dict]:
     return list_fixtures()
 
 
-_MIN_ODDS    = 1.10
-_MAX_ODDS    = 15.0
-_MIN_EDGE    = 0.0    # filtro real es Kelly
-_MAX_OVER    = 1.12   # descartar libros con margen > 12%
-_EDGE_BOOST  = 0.02   # descuento de margen que aplicamos como ventaja propia
+_MIN_ODDS = 1.10
+_MAX_ODDS = 15.0
+_MIN_EDGE = 0.0
+_MAX_OVER = 1.12
+_EDGE_BOOST = 0.02
+
+
+def _safe_prob(value: Any) -> float | None:
+    if isinstance(value, (int, float)):
+        v = float(value)
+        if 0.0 < v < 1.0:
+            return v
+    return None
 
 
 def _valid_outcomes(outcomes: list[dict]) -> list[dict]:
@@ -32,7 +59,6 @@ def _valid_outcomes(outcomes: list[dict]) -> list[dict]:
 
 
 def _fair_probs(outcomes: list[dict]) -> dict[str, float]:
-    """Calcula probabilidades fair removiendo margen del libro."""
     prices = [float(o["price"]) for o in outcomes]
     overround = sum(1.0 / p for p in prices)
     if overround > _MAX_OVER or overround <= 0:
@@ -41,6 +67,38 @@ def _fair_probs(outcomes: list[dict]) -> dict[str, float]:
         o["name"]: round((1.0 / float(o["price"])) / overround, 4)
         for o in outcomes
     }
+
+
+def best_edge_outcome(outcomes: list[dict], fair_probs: dict[str, float]) -> dict:
+    return max(
+        outcomes,
+        key=lambda o: (
+            min(fair_probs.get(o["name"], 0.0) + _EDGE_BOOST, 0.95)
+            - 1.0 / float(o["price"])
+        ),
+    )
+
+
+def _pick_snapshot_and_prob(fix: dict[str, Any], selection: str) -> tuple[dict | None, float | None]:
+    try:
+        snapshot = build_model_snapshot("tenis", fix)
+    except Exception:
+        snapshot = None
+
+    if not snapshot:
+        return None, None
+
+    ensemble = snapshot.get("ensemble") or {}
+    home_name = str(fix.get("home") or fix.get("home_team") or "").strip().lower()
+    away_name = str(fix.get("away") or fix.get("away_team") or "").strip().lower()
+    selection_norm = str(selection or "").strip().lower()
+
+    if selection_norm and selection_norm == home_name:
+        return snapshot, _safe_prob(ensemble.get("prob_home"))
+    if selection_norm and selection_norm == away_name:
+        return snapshot, _safe_prob(ensemble.get("prob_away"))
+
+    return snapshot, None
 
 
 def build_tenis_pick_messages(
@@ -84,11 +142,7 @@ def build_tenis_pick_messages(
         if not probs:
             continue
 
-        # Tomar solo el outcome con mayor edge por partido
-        best = max(
-            valid,
-            key=lambda o: (min(probs.get(o["name"], 0.0) + _EDGE_BOOST, 0.95) - 1.0 / float(o["price"]))
-        )
+        best = best_edge_outcome(valid, probs)
         outcomes_to_eval = [best]
 
         for outcome in outcomes_to_eval:
@@ -96,9 +150,10 @@ def build_tenis_pick_messages(
             selection = outcome.get("name", "Unknown")
             fair_p = probs.get(selection, 0.0)
 
-            model_prob = min(fair_p + _EDGE_BOOST, 0.95)
-            implied_p  = 1.0 / odds_taken
-            edge       = model_prob - implied_p
+            snapshot, snapshot_prob = _pick_snapshot_and_prob(fix, selection)
+            model_prob = snapshot_prob if snapshot_prob is not None else min(fair_p + _EDGE_BOOST, 0.95)
+            implied_p = 1.0 / odds_taken
+            edge = model_prob - implied_p
 
             key = (fix_id, "h2h", selection, odds_taken)
             if key in recorded:
@@ -120,22 +175,25 @@ def build_tenis_pick_messages(
             decision: KellyDecision = evaluate_kelly(opp)
 
             ev_pct = round(edge * 100, 2)
-            home = fix.get('home', '?')
-            away = fix.get('away', '?')
-            league = fix.get('league', 'Tenis')
+            home = fix.get("home", "?")
+            away = fix.get("away", "?")
+            league = fix.get("league", "Tenis")
 
+            trace = _model_trace(snapshot, model_name)
             if decision.should_bet:
                 try:
                     bet_record = kelly_to_bet_record(opp, decision)
-                    record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ('should_bet','reason')})
+                    record_bet(BETS_DB, **{k: v for k, v in bet_record.items() if k not in ("should_bet", "reason")})
                     recorded.add(key)
                 except Exception as e:
-                    import sys; print(f"[record_bet ERROR] {e}", file=sys.stderr)
-                lines.append(
+                    import sys
+                    print(f"[record_bet ERROR] {e}", file=sys.stderr)
+                pick_line = (
                     f"• {home} vs {away} [{league}] @ {odds_taken} "
                     f"(EV {ev_pct:.2f}%, edge {ev_pct:.2f}%) "
                     f"Bet {decision.capped_stake_pct:.2f}% → {decision.recommended_stake:.2f}"
                 )
+                lines.append(pick_line + (f"\n{trace}" if trace else ""))
                 picks_found += 1
             else:
                 lines.append(

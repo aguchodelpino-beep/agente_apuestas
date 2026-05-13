@@ -198,3 +198,6 @@ def is_valid_normalized_event(normalized: dict) -> bool:
         and normalized.get("home_team") not in {"", "TBD"}
         and normalized.get("away_team") not in {"", "TBD"}
     )
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

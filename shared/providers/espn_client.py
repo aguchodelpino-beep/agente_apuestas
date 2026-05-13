@@ -149,3 +149,6 @@ def crosscheck(
         ev["espn_match"] = match
         enriched.append(ev)
     return enriched
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

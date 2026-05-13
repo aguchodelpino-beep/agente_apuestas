@@ -27,3 +27,6 @@ def sgo_get(path: str, params: Optional[dict] = None, timeout: int = 20) -> Dict
         "data": data,
         "headers": dict(r.headers),
     }
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

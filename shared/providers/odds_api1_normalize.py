@@ -53,3 +53,6 @@ def normalize_odds_api1_fixture(item: dict[str, Any]) -> dict[str, Any]:
         raw=item,
     )
     return asdict(dto)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

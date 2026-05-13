@@ -116,3 +116,6 @@ def with_retry(
             )
             time.sleep(delay)
             delay = min(delay * cfg.backoff_factor, cfg.max_delay)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

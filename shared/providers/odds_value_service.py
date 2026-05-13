@@ -87,3 +87,6 @@ def get_today_fixtures(sport: str, limit: int = 20, min_pause: float = 0.0) -> l
 
     _cache[sport] = rows
     return rows
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

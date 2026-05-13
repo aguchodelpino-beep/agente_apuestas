@@ -113,3 +113,6 @@ def fetch_sport_group(group: str) -> List[Dict[str, Any]]:
     for sk in SPORT_GROUP.get(group, []):
         results.extend(fetch_fixtures(sk))
     return results
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

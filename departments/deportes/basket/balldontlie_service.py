@@ -24,3 +24,6 @@ def format_nba_games(date_str: str) -> str:
         away_name = away.get("full_name") or away.get("name") or "Away"
         lines.append(f"• {away_name} vs {home_name} — {status}")
     return "\n".join(lines)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

@@ -14,6 +14,7 @@ from handlers import (
 from departments.deportes.futbol.handlers import handle_futbol_picks
 from departments.deportes.basket.handlers import handle_basket_picks
 from departments.deportes.tenis.handlers import handle_tenis_picks
+from shared.estadisticas_handler import handle_estadisticas
 
 ROOT = Path(__file__).resolve().parent
 ENV_PATH = ROOT / ".env"
@@ -38,6 +39,8 @@ TOKEN = (
     or os.getenv("BOT_TOKEN")
     or os.getenv("TELEGRAM_TOKEN")
 )
+
+ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))
 
 if not TOKEN:
     raise RuntimeError("No se encontró TELEGRAM_BOT_TOKEN/TELEGRAMTOKEN en .env o entorno")
@@ -151,6 +154,16 @@ def register_handlers() -> dict:
         except Exception as e:
             bot.send_message(call.message.chat.id, f"❌ Error ROI: {e}")
 
+
+    @bot.message_handler(commands=["estadisticas"])
+    def cmd_estadisticas(message):
+        if ADMIN_CHAT_ID and message.chat.id != ADMIN_CHAT_ID:
+            bot.reply_to(message, "⛔ Comando solo para administradores.")
+            return
+        bot.send_chat_action(message.chat.id, "typing")
+        text = handle_estadisticas()
+        bot.reply_to(message, text, parse_mode="Markdown")
+
     return {
         "status": "ok",
         "handlers": [
@@ -163,6 +176,7 @@ def register_handlers() -> dict:
             "basketpicks",
             "cb_refresh",
             "cb_roi",
+            "estadisticas",
         ],
     }
 

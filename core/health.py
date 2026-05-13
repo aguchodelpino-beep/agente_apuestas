@@ -114,3 +114,6 @@ def get_health_status(
         api_status=api_results,
     )
     return asdict(status)
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

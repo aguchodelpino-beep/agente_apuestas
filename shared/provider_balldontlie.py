@@ -19,3 +19,6 @@ def get_nba_odds_by_date(date_str: str):
     r = requests.get(url, headers=_headers(), params={"dates[]": date_str}, timeout=30)
     r.raise_for_status()
     return r.json()
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

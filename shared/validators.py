@@ -59,3 +59,6 @@ def safe_float(value: Any, default: float = 0.0) -> float:
 
 def has_items(value: Any) -> bool:
     return isinstance(value, (list, tuple, set, dict)) and len(value) > 0
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

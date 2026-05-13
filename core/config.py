@@ -80,3 +80,9 @@ def load_settings() -> Settings:
 
 
 settings = load_settings()
+
+if __name__ == "__main__":
+    print("SCRIPT OK")
+
+# Alias de compatibilidad
+Config = Settings

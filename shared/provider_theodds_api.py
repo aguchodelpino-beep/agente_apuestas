@@ -28,6 +28,19 @@ def _first_nonempty(*values: str | None) -> str:
     return ""
 
 
+def _parse_key_list(raw: str) -> list[str]:
+    text = raw.strip()
+    if not text:
+        return []
+    try:
+        parsed = json.loads(text)
+        if isinstance(parsed, list):
+            return [str(k).strip() for k in parsed if str(k).strip()]
+    except Exception:
+        pass
+    return [k.strip().strip('"').strip("'") for k in text.replace("\n", ",").split(",") if k.strip().strip('"').strip("'")]
+
+
 def _load_state() -> dict[str, Any]:
     for path in STATE_PATHS:
         if path.exists():
@@ -72,10 +85,11 @@ def _all_keys() -> list[str]:
 
     multi = _first_nonempty(
         os.getenv("ODDS_API_KEYS"),
+        os.getenv("ODDSAPI_KEYS"),
         os.getenv("ODDSAPIKEYS"),
     )
     if multi:
-        keys.extend([k.strip() for k in multi.split(",") if k.strip()])
+        keys.extend(_parse_key_list(multi))
 
     single = _first_nonempty(
         os.getenv("ODDS_API_KEY"),
@@ -235,3 +249,6 @@ def get_active_tennis_keys() -> list[str]:
         if active and (key.startswith("tennis_") or group == "Tennis"):
             keys.append(key)
     return sorted(set(keys))
+
+if __name__ == "__main__":
+    print("SCRIPT OK")

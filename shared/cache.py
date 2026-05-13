@@ -39,3 +39,15 @@ def save_sport_day(sport: str, day: str, items: list[dict[str, Any]]) -> None:
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+if __name__ == "__main__":
+    print("SCRIPT OK")
+
+# Alias de compatibilidad
+class CacheManager:
+    load = staticmethod(load_sport_day)
+    save = staticmethod(save_sport_day)
+    write = staticmethod(write_json)
+
+# Re-export de compatibilidad
+from shared.datetime_utils import today_str  # noqa: F401

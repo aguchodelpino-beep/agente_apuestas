@@ -68,3 +68,6 @@ def handle_futbol_picks(*args, **kwargs) -> str:
         return f"⚽ FUTBOL PICKS\n\nError al procesar picks: {e}"
 
 __all__ = ["build_event_cards", "handle_eventos_futbol", "handle_futbol_picks"]
+
+if __name__ == "__main__":
+    print("SCRIPT OK")
