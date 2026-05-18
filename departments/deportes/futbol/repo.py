@@ -7,6 +7,7 @@ from shared.datetime_utils import today_str
 
 SPORT = "futbol"
 
+
 def _row_start(row: dict[str, Any]) -> str:
     return str(
         row.get("commence_time")
@@ -17,6 +18,7 @@ def _row_start(row: dict[str, Any]) -> str:
         or row.get("scheduled")
         or ""
     ).strip()
+
 
 def _row_tour(row: dict[str, Any]) -> str:
     league = row.get("league")
@@ -36,6 +38,7 @@ def _row_tour(row: dict[str, Any]) -> str:
 
     return "Fútbol"
 
+
 def _row_title(row: dict[str, Any]) -> str:
     home = (
         row.get("home")
@@ -53,14 +56,18 @@ def _row_title(row: dict[str, Any]) -> str:
     )
     return f"{home} vs {away}"
 
+
 def _sorted_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda row: (_row_start(row), _row_tour(row), _row_title(row)))
+
 
 def list_fixtures() -> list[dict[str, Any]]:
     return load_sport_day(SPORT, today_str())
 
+
 def list_live_fixtures() -> list[dict[str, Any]]:
     return [item for item in list_fixtures() if item.get("live") is True]
+
 
 def get_fixture_by_id(fixture_id: str) -> dict[str, Any] | None:
     for item in list_fixtures():
@@ -68,31 +75,40 @@ def get_fixture_by_id(fixture_id: str) -> dict[str, Any] | None:
             return item
     return None
 
+
 def get_today_events() -> list[dict[str, Any]]:
+    """Solo eventos cuyo start_time corresponde a hoy (UTC). Excluye filas sin fecha."""
     today = today_str()
-    rows = []
-    for item in list_fixtures():
-        start = _row_start(item)
-        if not start or start.startswith(today):
-            rows.append(item)
+    rows = [
+        item for item in list_fixtures()
+        if _row_start(item).startswith(today)
+    ]
     return _sorted_rows(rows)
 
+
 def get_upcoming_events(limit: int = 10) -> list[dict[str, Any]]:
-    rows = _sorted_rows(list_fixtures())
+    """Próximos eventos con fecha conocida, ordenados por hora de inicio."""
+    rows = [item for item in list_fixtures() if _row_start(item)]
+    rows = _sorted_rows(rows)
     if limit <= 0:
         return rows
     return rows[:limit]
+
 
 def get_events_by_tour(tour: str, limit: int = 10) -> list[dict[str, Any]]:
     needle = (tour or "").strip().lower()
     if not needle:
         return get_upcoming_events(limit=limit)
 
-    rows = [item for item in list_fixtures() if needle in _row_tour(item).lower()]
+    rows = [
+        item for item in list_fixtures()
+        if needle in _row_tour(item).lower() and _row_start(item)
+    ]
     rows = _sorted_rows(rows)
     if limit <= 0:
         return rows
     return rows[:limit]
+
 
 if __name__ == "__main__":
     print("SCRIPT OK")

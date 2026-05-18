@@ -1,0 +1,18 @@
+[Unit]
+Description=Agente Apuestas Telegram Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aguchodelpino
+Group=aguchodelpino
+WorkingDirectory=/home/aguchodelpino/agente_apuestas
+ExecStart=/bin/bash /home/aguchodelpino/agente_apuestas/scripts/run_bot_singleton.sh
+Restart=always
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

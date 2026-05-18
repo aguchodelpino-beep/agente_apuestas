@@ -104,7 +104,7 @@ def _collect_source_items_for_sport(sport: str) -> List[Dict[str, Any]]:
     candidates = [
         BASE_PATH / "cache" / f"{sport}.json",
         BASE_PATH / "cache" / f"{sport}_today.json",
-        BASE_PATH / "cache_diario" / f"{sport}.json",
+        BASE_PATH / "cache_diario" / f"cache{sport}.json",
         BASE_PATH / "cache_diario" / f"{sport}_today.json",
         BASE_PATH / "data" / sport / "live_today.json",
         BASE_PATH / "departments" / "deportes" / sport / "live_today.json",

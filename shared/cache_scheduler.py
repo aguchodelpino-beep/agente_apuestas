@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -11,11 +11,13 @@ from apscheduler.triggers.cron import CronTrigger
 
 from shared.provider_theodds_api import get_active_tennis_keys, get_odds
 from shared.picks_cache import build_picks_from_events
+from scripts.build_enriched_cache import build_all as build_enriched_cache_all
 
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
+CACHE_DIARIO_DIR = ROOT / "cache_diario"
 TZ = "America/Guayaquil"
 
 FOOTBALL_KEYS = [
@@ -24,6 +26,28 @@ FOOTBALL_KEYS = [
     "soccer_germany_bundesliga",
     "soccer_italy_serie_a",
     "soccer_france_ligue_one",
+    "soccer_netherlands_eredivisie",
+    "soccer_portugal_primeira_liga",
+    "soccer_russia_premier_league",
+    "soccer_uefa_champs_league",
+    "soccer_uefa_europa_league",
+    "soccer_uefa_europa_conference_league",
+    "soccer_fa_cup",
+    "soccer_germany_dfb_pokal",
+    "soccer_italy_coppa_italia",
+    "soccer_france_coupe_de_france",
+    "soccer_brazil_campeonato",
+    "soccer_argentina_primera_division",
+    "soccer_mexico_ligamx",
+    "soccer_colombia_primera_a",
+    "soccer_chile_campeonato",
+    "soccer_ecuador_liga_pro",
+    "soccer_usa_mls",
+    "soccer_saudi_arabia_pro_league",
+    "soccer_japan_j_league",
+    "soccer_china_superleague",
+    "soccer_korea_kleague1",
+    "soccer_australia_aleague",
     "soccer_uefa_champs_league",
     "soccer_conmebol_copa_libertadores",
     "soccer_conmebol_copa_sudamericana",
@@ -37,6 +61,11 @@ BASKET_KEYS = [
 ]
 
 _scheduler: BackgroundScheduler | None = None
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
 
 
 def _today_str() -> str:
@@ -89,14 +118,24 @@ def _save_rows(sport: str, rows: list[dict[str, Any]]) -> Path:
     day = _today_str()
     out_path = RAW_DIR / sport / f"{day}.json"
     latest_path = RAW_DIR / sport / "latest.json"
+    diario_path = CACHE_DIARIO_DIR / f"cache{sport}.json"
+
+    CACHE_DIARIO_DIR.mkdir(parents=True, exist_ok=True)
 
     _atomic_write_json(out_path, rows)
     _atomic_write_json(latest_path, rows)
+    _atomic_write_json(
+        diario_path,
+        {
+            "sport": sport,
+            "date": day,
+            "updated_at": _utc_now().isoformat().replace("+00:00", "Z"),
+            "items": rows,
+        },
+    )
 
     logger.info("cache %s guardado: %s eventos en %s", sport, len(rows), out_path)
     return out_path
-
-
 def build_futbol_cache() -> int:
     rows: list[dict[str, Any]] = []
     for key in FOOTBALL_KEYS:
@@ -181,6 +220,14 @@ def start_cache_scheduler() -> BackgroundScheduler:
         build_all_caches,
         CronTrigger(hour=2, minute=0, timezone=TZ),
         id="daily_cache_2am_ec",
+        replace_existing=True,
+        coalesce=True,
+        max_instances=1,
+    )
+    scheduler.add_job(
+        build_enriched_cache_all,
+        CronTrigger(hour=2, minute=5, timezone=TZ),
+        id="daily_enriched_cache_205am_ec",
         replace_existing=True,
         coalesce=True,
         max_instances=1,

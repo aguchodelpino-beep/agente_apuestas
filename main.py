@@ -1,13 +1,8 @@
-from __future__ import annotations
+#!/usr/bin/env python3
 
-from core.logging import get_logger
-
-logger = get_logger(__name__)
-
-def run() -> None:
-    logger.info("app_start")
-    from telegrambot import main as bot_main
-    bot_main()
+def main():
+    print("main.py deshabilitado para arrancar telegrambot directamente")
+    return 0
 
 if __name__ == "__main__":
-    run()
+    raise SystemExit(main())

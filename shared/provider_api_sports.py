@@ -1,14 +1,28 @@
 from __future__ import annotations
-import requests
+
+import os
 from typing import Any, Dict, List, Optional
-from shared.providers import API_SPORTS_KEY
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_SPORTS_KEY = (
+    os.getenv("API_SPORTS_KEY")
+    or os.getenv("APISPORTS_KEY")
+    or os.getenv("API_FOOTBALL_KEY")
+    or ""
+).strip()
 
 BASE_URL = "https://v3.football.api-sports.io"
+
 
 def _headers() -> dict:
     return {
         "x-apisports-key": API_SPORTS_KEY,
     }
+
 
 def api_sports_get(path: str, params: Optional[dict] = None, timeout: int = 20) -> Dict[str, Any]:
     if not API_SPORTS_KEY:
@@ -29,8 +43,10 @@ def api_sports_get(path: str, params: Optional[dict] = None, timeout: int = 20) 
         "headers": dict(r.headers),
     }
 
+
 def get_status() -> Dict[str, Any]:
     return api_sports_get("/status")
+
 
 def get_leagues(
     season: Optional[int] = None,
@@ -45,6 +61,7 @@ def get_leagues(
     if search:
         params["search"] = search
     return api_sports_get("/leagues", params=params)
+
 
 def get_fixtures(
     league: int,
@@ -65,6 +82,7 @@ def get_fixtures(
         params["last"] = last_n
     return api_sports_get("/fixtures", params=params)
 
+
 def extract_response_items(payload: Dict[str, Any]) -> List[dict]:
     data = payload.get("data", {})
     response = data.get("response", []) if isinstance(data, dict) else []
@@ -72,28 +90,34 @@ def extract_response_items(payload: Dict[str, Any]) -> List[dict]:
         return response
     return []
 
-def find_league_id_by_name(search_text: str, country: Optional[str] = None) -> List[dict]:
-    payload = get_leagues(search=search_text)
+
+def find_league_id_by_name(search_text: str, country: Optional[str] = None, season: Optional[int] = None) -> List[dict]:
+    payload = get_leagues(search=search_text, country=country, season=season)
     items = extract_response_items(payload)
     out: List[dict] = []
 
     for item in items:
         league = item.get("league", {})
         country_obj = item.get("country", {})
-        row = {
+        seasons = item.get("seasons", []) if isinstance(item.get("seasons"), list) else []
+        out.append({
             "league_id": league.get("id"),
             "league_name": league.get("name"),
             "league_type": league.get("type"),
             "country": country_obj.get("name"),
             "country_code": country_obj.get("code"),
-        }
-        if country and str(row["country"]).lower() != country.lower():
-            continue
-        out.append(row)
+            "seasons": seasons,
+        })
 
     return out
 
-def list_fixtures_by_league(league: int, season: int, next_n: Optional[int] = None, last_n: Optional[int] = None) -> List[dict]:
+
+def list_fixtures_by_league(
+    league: int,
+    season: int,
+    next_n: Optional[int] = None,
+    last_n: Optional[int] = None,
+) -> List[dict]:
     payload = get_fixtures(league=league, season=season, next_n=next_n, last_n=last_n)
     items = extract_response_items(payload)
     out: List[dict] = []
@@ -115,6 +139,7 @@ def list_fixtures_by_league(league: int, season: int, next_n: Optional[int] = No
         })
 
     return out
+
 
 if __name__ == "__main__":
     print("SCRIPT OK")

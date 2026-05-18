@@ -98,8 +98,13 @@ def format_events_block(title: str, emoji: str, events: list, action_path: str =
             home = event.get("home") or event.get("player1") or event.get("team1") or "TBD"
             away = event.get("away") or event.get("player2") or event.get("team2") or "TBD"
             league = event.get("league") or event.get("tournament") or title
-            status = event.get("status") or "Pendiente"
-            lines.append(f"   🕐 {time_str} | {home} vs {away} | {league} | {status}")
+            status = str(event.get("status") or "").strip()
+
+            base = f"   🕐 {time_str} | {home} vs {away} | {league}"
+            if status:
+                base += f" | {status}"
+
+            lines.append(base)
         lines.append("")
 
     if action_path:

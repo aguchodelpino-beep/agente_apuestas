@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import sys
+import fcntl
 from pathlib import Path
 
 import telebot
@@ -45,7 +47,7 @@ ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))
 if not TOKEN:
     raise RuntimeError("No se encontró TELEGRAM_BOT_TOKEN/TELEGRAMTOKEN en .env o entorno")
 
-bot = telebot.TeleBot(TOKEN, parse_mode="Markdown")
+bot = telebot.TeleBot(TOKEN)
 
 def register_handlers() -> dict:
     @bot.message_handler(commands=["start"])
@@ -64,17 +66,17 @@ def register_handlers() -> dict:
     @bot.message_handler(commands=["eventostenis"])
     def cmd_eventos_tenis(message):
         text = handle_eventos_tenis()
-        bot.reply_to(message, text, parse_mode="Markdown")
+        bot.reply_to(message, text)
 
     @bot.message_handler(commands=["eventosfutbol"])
     def cmd_eventos_futbol(message):
         text = handle_eventos_futbol()
-        bot.reply_to(message, text, parse_mode="Markdown")
+        bot.reply_to(message, text)
 
     @bot.message_handler(commands=["eventosbasket"])
     def cmd_eventos_basket(message):
         text = handle_eventos_basket()
-        bot.reply_to(message, text, parse_mode="Markdown")
+        bot.reply_to(message, text)
 
     @bot.message_handler(commands=["tenispicks"])
     def cmd_tenis_picks(message):
@@ -84,7 +86,7 @@ def register_handlers() -> dict:
             InlineKeyboardButton("🔄 Actualizar", callback_data="refresh:tenis"),
             InlineKeyboardButton("📊 ROI tenis", callback_data="roi:tenis"),
         )
-        bot.reply_to(message, text, parse_mode="Markdown", reply_markup=kb)
+        bot.reply_to(message, text, reply_markup=kb)
 
     @bot.message_handler(commands=["futbolpicks"])
     def cmd_futbol_picks(message):
@@ -94,7 +96,7 @@ def register_handlers() -> dict:
             InlineKeyboardButton("🔄 Actualizar", callback_data="refresh:futbol"),
             InlineKeyboardButton("📊 ROI fútbol", callback_data="roi:futbol"),
         )
-        bot.reply_to(message, text, parse_mode="Markdown", reply_markup=kb)
+        bot.reply_to(message, text, reply_markup=kb)
 
     @bot.message_handler(commands=["basketpicks"])
     def cmd_basket_picks(message):
@@ -104,7 +106,7 @@ def register_handlers() -> dict:
             InlineKeyboardButton("🔄 Actualizar", callback_data="refresh:basket"),
             InlineKeyboardButton("📊 ROI basket", callback_data="roi:basket"),
         )
-        bot.reply_to(message, text, parse_mode="Markdown", reply_markup=kb)
+        bot.reply_to(message, text, reply_markup=kb)
 
     @bot.callback_query_handler(func=lambda c: c.data.startswith("refresh:"))
     def cb_refresh(call):
@@ -125,7 +127,7 @@ def register_handlers() -> dict:
             )
             bot.edit_message_text(
                 text, call.message.chat.id, call.message.message_id,
-                parse_mode="Markdown", reply_markup=kb
+                reply_markup=kb
             )
 
     @bot.callback_query_handler(func=lambda c: c.data.startswith("roi:"))
@@ -150,7 +152,7 @@ def register_handlers() -> dict:
             if len(lines) == 1:
                 lines.append(f"Sin apuestas registradas para {sport}.")
             lines.append(f"\n*Total global:* {summary['total_bets']} bets | PnL: {summary.get('pnl',0):.2f}")
-            bot.send_message(call.message.chat.id, "\n".join(lines), parse_mode="Markdown")
+            bot.send_message(call.message.chat.id, "\n".join(lines))
         except Exception as e:
             bot.send_message(call.message.chat.id, f"❌ Error ROI: {e}")
 
@@ -162,7 +164,7 @@ def register_handlers() -> dict:
             return
         bot.send_chat_action(message.chat.id, "typing")
         text = handle_estadisticas()
-        bot.reply_to(message, text, parse_mode="Markdown")
+        bot.reply_to(message, text)
 
     return {
         "status": "ok",
@@ -186,7 +188,13 @@ def self_test() -> bool:
 
 def main() -> None:
     register_handlers()
-    bot.infinity_polling(skip_pending=True, timeout=30, long_polling_timeout=30)
+    bot.delete_webhook(drop_pending_updates=True)
+    bot.remove_webhook()
+    try:
+        bot.get_updates(offset=-1, timeout=1)
+    except Exception:
+        pass
+    bot.polling(non_stop=True, skip_pending=True, timeout=30, long_polling_timeout=30)
 
 if __name__ == "__main__":
     assert self_test()

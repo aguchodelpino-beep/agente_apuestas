@@ -172,7 +172,7 @@ check_file "tenis/service.py"      "departments/deportes/tenis/service.py"
 check_file "tenis/utils.py"        "departments/deportes/tenis/utils.py"        0
 check_file "analitica/tenis/service.py" "departments/analitica/deportes/tenis/service.py"
 check_symbol "tenis service: NO BET"    "departments/analitica/deportes/tenis/service.py" "NO BET"
-check_symbol "tenis service: best edge" "departments/analitica/deportes/tenis/service.py" "best edge"
+check_symbol "tenis service: best_edge" "departments/analitica/deportes/tenis/service.py" "best_edge"
 
 # ════════════════════════════════════════════════════════════
 hdr "6. DEPORTES — FÚTBOL"

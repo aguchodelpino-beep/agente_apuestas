@@ -204,3 +204,50 @@ def build_tenis_pick_messages(
     if picks_found == 0:
         lines.append("\nSin picks con edge positivo hoy.")
     return lines
+from typing import Iterable, Optional
+
+def best_edge(decisions: Iterable[object]) -> Optional[object]:
+    """
+    Devuelve la decisión con mayor edge_pct, ignorando NO BET y valores nulos.
+    Compatible con KellyDecision u objetos que expongan .edge_pct.
+    """
+    valid = []
+    for d in decisions or []:
+        if d is None:
+            continue
+        label = getattr(d, "label", None) or getattr(d, "decision", None)
+        if isinstance(label, str) and label.strip().upper() == "NO BET":
+            continue
+        edge = getattr(d, "edge_pct", None)
+        if edge is None:
+            continue
+        valid.append(d)
+
+    if not valid:
+        return None
+
+    return max(valid, key=lambda x: getattr(x, "edge_pct", float("-inf")))
+from typing import Iterable, Optional
+
+def best_edge(items: Iterable[object]) -> Optional[object]:
+    def _score(x: object) -> float:
+        edge_pct = getattr(x, "edge_pct", None)
+        if edge_pct is not None:
+            return float(edge_pct)
+        edge = getattr(x, "edge", None)
+        if edge is not None:
+            return float(edge)
+        return float("-inf")
+
+    valid = []
+    for x in items or []:
+        if x is None:
+            continue
+        label = getattr(x, "label", None) or getattr(x, "decision", None)
+        if isinstance(label, str) and label.strip().upper() == "NO BET":
+            continue
+        if _score(x) == float("-inf"):
+            continue
+        valid.append(x)
+
+    return max(valid, key=_score) if valid else None

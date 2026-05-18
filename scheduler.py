@@ -10,14 +10,10 @@ from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 from departments.jobs.line_movement_alert import run_line_movement_alert
-from shared.providers.tenis_provider import fetch_tennis_events
-from shared.providers.futbol_provider import fetch_futbol_events
-from shared.providers.basket_provider import fetch_basket_events
-
-from shared import cache as cache_mod
 from shared.telegram_sender import send_telegram_message
 
 UTC = timezone.utc
+RAW_DIR = Path("data/raw")
 
 
 class CacheManager:
@@ -28,17 +24,21 @@ class CacheManager:
         return datetime.now(UTC).date().isoformat()
 
     def day_path(self, sport: str) -> Path:
-        d = cache_mod.RAW_DIR / sport
+        d = RAW_DIR / sport
         d.mkdir(parents=True, exist_ok=True)
         return d / f"{self._today_str()}.json"
 
-    def write_day(self, sport: str, payload: list, source: str = "unknown") -> Path:
+    def read_day(self, sport: str) -> list:
         path = self.day_path(sport)
-        cache_mod.write_json(path, payload)
-        return path
+        if not path.exists():
+            return []
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return []
 
     def write_metric(self, row: dict) -> Path:
-        path = cache_mod.SCHEDULER_DIR / "scheduler_metrics.jsonl"
+        path = Path("data/cache/scheduler_metrics.jsonl")
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -48,61 +48,36 @@ class CacheManager:
 cache = CacheManager()
 
 
-def refresh_sport(sport: str) -> dict:
+def refresh_from_cache(sport: str) -> dict:
     started = time.perf_counter()
-    error = None
-    payload = []
-    source = "unknown"
-    try:
-        if sport == "tenis":
-            payload = fetch_tennis_events()
-            source = "espn"
-        elif sport == "futbol":
-            payload = fetch_futbol_events()
-            source = "openligadb"
-        elif sport == "basket":
-            payload = fetch_basket_events()
-            source = "espn"
-        else:
-            raise ValueError(f"sport no soportado: {sport}")
-
-        path = cache.write_day(sport, payload, source)
-        status = "ok"
-    except Exception as exc:
-        status = "error"
-        error = str(exc)
-        path = cache.day_path(sport)
-
-    p = Path(path)
+    payload = cache.read_day(sport)
     row = {
         "timestamp": cache.utc_now_iso(),
         "sport": sport,
-        "status": status,
-        "cache_status": "fresh" if status == "ok" else "error",
+        "status": "ok" if payload else "empty",
+        "cache_status": "fresh" if payload else "missing",
         "latency_ms": round((time.perf_counter() - started) * 1000, 2),
         "records": len(payload),
-        "cache_path": str(path),
-        "cache_file_size_bytes": p.stat().st_size if p.exists() else 0,
+        "cache_path": str(cache.day_path(sport)),
         "cache_age_minutes": 0.0,
-        "error": error,
-        "job_id": f"refresh_{sport}",
+        "job_id": f"refresh_{sport}_cache_only",
         "jobstore": "default",
-        "source": source,
+        "source": "cache_only",
     }
     cache.write_metric(row)
     return row
 
 
 def refresh_tenis() -> dict:
-    return refresh_sport("tenis")
+    return refresh_from_cache("tenis")
 
 
 def refresh_futbol() -> dict:
-    return refresh_sport("futbol")
+    return refresh_from_cache("futbol")
 
 
 def refresh_basket() -> dict:
-    return refresh_sport("basket")
+    return refresh_from_cache("basket")
 
 
 def build_scheduler() -> BackgroundScheduler:
@@ -115,38 +90,7 @@ def build_scheduler() -> BackgroundScheduler:
     )
 
 
-def register_example_jobs(scheduler: BackgroundScheduler) -> None:
-    return None
-
-
-def _refresh_basket_with_json() -> dict:
-    """Refresca basket y actualiza live_today.json con filtro ECT."""
-    import json
-    from pathlib import Path
-    result = refresh_sport("basket")
-    try:
-        events = fetch_basket_events()
-        rows = [
-            {
-                "id": e["fixture_id"],
-                "home": e["home"],
-                "away": e["away"],
-                "datetime": e["start_time"],
-                "league": e["league"],
-                "status": e["status"],
-                "_source": e["source"],
-            }
-            for e in events
-        ]
-        out = Path("departments/deportes/basket/live_today.json")
-        out.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
-    except Exception as exc:
-        result["live_today_error"] = str(exc)
-    return result
-
-
 def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
-    # Alertas de movimiento de línea
     scheduler.add_job(
         run_line_movement_alert,
         trigger="interval",
@@ -160,11 +104,11 @@ def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
         max_instances=1,
         misfire_grace_time=900,
     )
-    # Refresco de deportes cada 30 min
+
     for job_id, func, label in [
-        ("refresh_tenis",  refresh_tenis,              "Tenis – refresh ESPN"),
-        ("refresh_futbol", refresh_futbol,             "Fútbol – refresh OpenLigaDB"),
-        ("refresh_basket", _refresh_basket_with_json,  "Basket – refresh ESPN + live_today.json"),
+        ("refresh_tenis_cache", refresh_tenis, "Tenis – cache only"),
+        ("refresh_futbol_cache", refresh_futbol, "Fútbol – cache only"),
+        ("refresh_basket_cache", refresh_basket, "Basket – cache only"),
     ]:
         scheduler.add_job(
             func,
@@ -177,39 +121,66 @@ def register_runtime_jobs(scheduler: BackgroundScheduler) -> None:
             coalesce=True,
             max_instances=1,
             misfire_grace_time=300,
+            next_run_time=datetime.now(UTC),
         )
-
-
-def scheduler_summary(scheduler: BackgroundScheduler) -> list[dict]:
-    started_here = False
-    try:
-        if not scheduler.running:
-            scheduler.start(paused=True)
-            started_here = True
-        rows = []
-        for job in scheduler.get_jobs():
-            nrt = getattr(job, "next_run_time", None)
-            rows.append({
-                "id": getattr(job, "id", None),
-                "name": getattr(job, "name", None),
-                "jobstore": getattr(job, "_jobstore_alias", "default"),
-                "next_run_time": nrt.isoformat() if nrt else None,
-                "trigger": str(getattr(job, "trigger", "")),
-            })
-        return rows
-    finally:
-        if started_here and scheduler.running:
-            scheduler.shutdown(wait=False)
 
 
 if __name__ == "__main__":
     s = build_scheduler()
-    register_example_jobs(s)
     register_runtime_jobs(s)
     s.start()
-    print("scheduler_started")
+    print("scheduler_started_cache_only")
     try:
         while True:
             time.sleep(60)
     except KeyboardInterrupt:
         s.shutdown(wait=False)
+
+# ── alias para tests ──────────────────────────────────────────────────────────
+# Los tests hacen: from scheduler import send_telegram_message
+# La función real está en shared/telegram_sender.py — re-exportamos aquí.
+try:
+    from shared.telegram_sender import send_telegram_message as _stm  # noqa: F401
+    send_telegram_message = _stm
+except ImportError:
+    import os, requests as _requests, logging as _logging
+    _log = _logging.getLogger(__name__)
+    def send_telegram_message(text: str) -> bool:  # type: ignore[misc]
+        token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+        chat_id = os.getenv("TELEGRAM_CHAT_ID", "")
+        if not token or not chat_id:
+            _log.warning("send_telegram_message: variables no configuradas")
+            return False
+        try:
+            resp = _requests.post(
+                f"https://api.telegram.org/bot{token}/sendMessage",
+                json={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
+                timeout=10,
+            )
+            return resp.ok
+        except Exception as exc:
+            _log.error("send_telegram_message error: %s", exc)
+            return False
+
+
+def scheduler_summary(scheduler) -> list[dict]:
+    """Retorna lista de jobs activos con id, name y próxima ejecución."""
+    jobs = []
+    for job in scheduler.get_jobs():
+        next_run = getattr(job, "next_run_time", None)
+        jobs.append({
+            "id":       job.id,
+            "name":     job.name,
+            "next_run": str(next_run) if next_run else "not_started",
+            "trigger":  str(job.trigger),
+        })
+    return jobs
+
+
+def register_example_jobs(scheduler: BackgroundScheduler) -> None:
+    """
+    Función de documentación/onboarding.
+    NO registra jobs reales — usa register_runtime_jobs() para eso.
+    Los jobs de producción se registran en register_runtime_jobs.
+    """
+    pass

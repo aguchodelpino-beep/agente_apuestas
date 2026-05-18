@@ -1,64 +1,29 @@
 from __future__ import annotations
 
-from collections import OrderedDict
-from datetime import datetime
-from departments.deportes.futbol.views import handle_eventos_futbol as _view_handle_eventos_futbol
+from departments.deportes.futbol.service import build_event_cards
+from departments.visuales.formatter import format_events_block
 
-def _safe_parse_dt(value: str | None) -> datetime | None:
-    if not value:
-        return None
-    for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
-        try:
-            return datetime.strptime(value, fmt)
-        except Exception:
-            pass
-    return None
 
-def build_event_cards(limit: int = 50) -> list[dict]:
-    try:
-        data = _view_handle_eventos_futbol()
-        if isinstance(data, list):
-            return data[:limit]
-    except Exception:
-        pass
-    return []
+def build_event_cards_handler(limit: int = 50) -> list[dict]:
+    return build_event_cards(limit=limit)
 
-def _group_lines(cards: list[dict]) -> list[str]:
-    grouped: OrderedDict[str, list[str]] = OrderedDict()
-    for item in cards:
-        title = item.get("title", "Partido")
-        start = item.get("start") or item.get("date") or ""
-        dt = _safe_parse_dt(start)
-        day_key = dt.strftime("%d/%m") if dt else "N/D"
-        hour = dt.strftime("%I:%M %p") if dt else "N/D"
-        status = str(item.get("status", "")).lower()
-        live = " 🔴 EN VIVO" if "live" in status or "en vivo" in status else ""
-        line = f"   🕐 {hour}{live} | {title}"
-        grouped.setdefault(day_key, []).append(line)
-
-    lines: list[str] = []
-    for day_key, rows in grouped.items():
-        lines.append(f"📅 {day_key}")
-        lines.extend(rows)
-        lines.append("")
-    return lines
 
 def handle_eventos_futbol(*args, **kwargs) -> str:
-    cards = build_event_cards()
-    today = datetime.utcnow().strftime("%d/%m/%Y")
-    lines = [
-        "⚽ FUTBOL - PROXIMOS PARTIDOS",
-        f"🗓️ {today}",
-        "━━━━━━━━━━━━━━━━━━━━━━",
-        "",
-    ]
-    if cards:
-        lines.extend(_group_lines(cards))
-    else:
-        lines.append("Sin eventos disponibles.")
-        lines.append("")
-    lines.append("📊 Ver picks con EV y Stake -> /futbolpicks")
-    return "\n".join(lines)
+    try:
+        cards = build_event_cards(limit=10)
+        normalized = []
+        for item in cards:
+            normalized.append({
+                "datetime": item.get("start", ""),
+                "home": (item.get("title", "TBD vs TBD").split(" vs ", 1)[0] if " vs " in item.get("title", "") else item.get("title", "TBD")),
+                "away": (item.get("title", "TBD vs TBD").split(" vs ", 1)[1] if " vs " in item.get("title", "") else "TBD"),
+                "league": item.get("tour", "Fútbol"),
+                "status": item.get("status", "scheduled"),
+            })
+        return format_events_block("Fútbol", "⚽", normalized, action_path="futbolpicks")
+    except Exception as e:
+        return f"⚽ FUTBOL - PROXIMOS PARTIDOS\n\nError al cargar eventos: {e}"
+
 
 def handle_futbol_picks(*args, **kwargs) -> str:
     try:
@@ -67,7 +32,8 @@ def handle_futbol_picks(*args, **kwargs) -> str:
     except Exception as e:
         return f"⚽ FUTBOL PICKS\n\nError al procesar picks: {e}"
 
-__all__ = ["build_event_cards", "handle_eventos_futbol", "handle_futbol_picks"]
+
+__all__ = ["build_event_cards_handler", "handle_eventos_futbol", "handle_futbol_picks"]
 
 if __name__ == "__main__":
     print("SCRIPT OK")
